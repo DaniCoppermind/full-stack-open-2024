@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Display = ({ totalGood, totalNeutral, totalBad }) => {
+const Stadistics = ({ totalGood, totalNeutral, totalBad }) => {
   const totalFeedback = totalGood + totalNeutral + totalBad
   const average =
     (totalGood * 1 + totalNeutral * 0 + totalBad * -1) / totalFeedback
@@ -8,30 +8,40 @@ const Display = ({ totalGood, totalNeutral, totalBad }) => {
 
   return (
     <section>
-      <p>
-        <b>Good:</b> {totalGood}
-      </p>
-      <p>
-        <b>Neutral:</b> {totalNeutral}
-      </p>
-      <p>
-        <b>Bad:</b> {totalBad}
-      </p>
-      <p>
-        <b>Total:</b> {totalFeedback}
-      </p>
-      <p>
-        <b>Average:</b> {isNaN(average) ? 0 : average.toFixed(2)}
-      </p>
-      <p>
-        <b>Positive:</b> {isNaN(positive) ? 0 : positive.toFixed(2)}%
-      </p>
+      <StadisticData text={'Good'} value={totalGood} />
+      <StadisticData text={'Neutral'} value={totalNeutral} />
+      <StadisticData text={'Bad'} value={totalBad} />
+      <StadisticData text={'Total'} value={totalFeedback} />
+      <StadisticData
+        text={'Average'}
+        value={isNaN(average) ? 0 : average.toFixed(2)}
+      />
+      <StadisticData
+        text={'Positive'}
+        value={isNaN(positive) ? 0 : positive.toFixed(2) + '%'}
+      />
     </section>
   )
 }
 
+const StadisticData = ({ text, value }) => {
+  return (
+    <p>
+      <b>{text}:</b> {value}
+    </p>
+  )
+}
+
 const Button = ({ text, handleClick }) => {
-  return <button onClick={handleClick}>{text}</button>
+  const buttonStyle = {
+    margin: '2px',
+  }
+
+  return (
+    <button style={buttonStyle} onClick={handleClick}>
+      {text}
+    </button>
+  )
 }
 
 const App = () => {
@@ -59,7 +69,7 @@ const App = () => {
       <Button handleClick={handleNeutralClick} text={'neutral'} />
       <Button handleClick={handleBadClick} text={'bad'} />
       <h2>stadistics</h2>
-      <Display totalGood={good} totalNeutral={neutral} totalBad={bad} />
+      <Stadistics totalGood={good} totalNeutral={neutral} totalBad={bad} />
     </>
   )
 }
