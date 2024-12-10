@@ -11,7 +11,7 @@ const Stadistics = ({ totalGood, totalNeutral, totalBad }) => {
   }
 
   return (
-    <section>
+    <table>
       <StadisticData text={'Good'} value={totalGood} />
       <StadisticData text={'Neutral'} value={totalNeutral} />
       <StadisticData text={'Bad'} value={totalBad} />
@@ -24,15 +24,20 @@ const Stadistics = ({ totalGood, totalNeutral, totalBad }) => {
         text={'Positive'}
         value={isNaN(positive) ? 0 : positive.toFixed(2) + '%'}
       />
-    </section>
+    </table>
   )
 }
 
 const StadisticData = ({ text, value }) => {
+  const styles = {
+    textAling: 'left',
+  }
+
   return (
-    <p>
-      <b>{text}:</b> {value}
-    </p>
+    <tr style={styles}>
+      <th style={{ paddingRight: '8px' }}>{text}:</th>
+      <td>{value}</td>
+    </tr>
   )
 }
 
