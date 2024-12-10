@@ -6,6 +6,10 @@ const Stadistics = ({ totalGood, totalNeutral, totalBad }) => {
     (totalGood * 1 + totalNeutral * 0 + totalBad * -1) / totalFeedback
   const positive = (totalGood / totalFeedback) * 100
 
+  if (totalFeedback === 0) {
+    return <p>No feedback given</p>
+  }
+
   return (
     <section>
       <StadisticData text={'Good'} value={totalGood} />
