@@ -1,6 +1,11 @@
 import { useState } from 'react'
 
 const Display = ({ totalGood, totalNeutral, totalBad }) => {
+  const totalFeedback = totalGood + totalNeutral + totalBad
+  const average =
+    (totalGood * 1 + totalNeutral * 0 + totalBad * -1) / totalFeedback
+  const positive = (totalGood / totalFeedback) * 100
+
   return (
     <section>
       <p>
@@ -11,6 +16,15 @@ const Display = ({ totalGood, totalNeutral, totalBad }) => {
       </p>
       <p>
         <b>Bad:</b> {totalBad}
+      </p>
+      <p>
+        <b>Total:</b> {totalFeedback}
+      </p>
+      <p>
+        <b>Average:</b> {isNaN(average) ? 0 : average.toFixed(2)}
+      </p>
+      <p>
+        <b>Positive:</b> {isNaN(positive) ? 0 : positive.toFixed(2)}%
       </p>
     </section>
   )
