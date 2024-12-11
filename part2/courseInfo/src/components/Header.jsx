@@ -1,5 +1,5 @@
-function Header({ title }) {
-  return <h1>{title}</h1>
+function Header({ name }) {
+  return <h2>{name}</h2>
 }
 
 export default Header
