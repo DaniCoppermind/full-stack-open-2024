@@ -9,6 +9,11 @@
       "content": "HOLAA",
       "important": false,
       "id": 2
+    },
+    {
+      "content": "add",
+      "important": false,
+      "id": 3
     }
   ],
   "posts": [
