@@ -6,6 +6,7 @@ import axios from 'axios'
 import './app.css'
 
 import personsServices from './services/persons'
+import Notification from './components/Notification'
 
 const BASE_URL = 'http://localhost:3001/persons'
 
@@ -14,6 +15,7 @@ const App = () => {
   const [newName, setNewName] = useState('') // input name form
   const [newNumber, setNewNumber] = useState('')
   const [searchPerson, setsearchPerson] = useState('')
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     personsServices.getAll().then((dataPersons) => {
@@ -60,7 +62,12 @@ const App = () => {
       setPersons(persons.concat(data))
       setNewName('')
       setNewNumber('')
+      setMessage(`Added ${newName} Correctly`)
     })
+
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
   }
 
   const handleButtonDelete = (event) => {
@@ -87,8 +94,10 @@ const App = () => {
   }
 
   const searchedPersons = persons.filter((person) => {
-    const personText = person.name.toLowerCase()
-    const searchText = searchPerson.toLowerCase()
+    const personText = person.name
+    const searchText = searchPerson
+
+    console.log(personText, searchText)
 
     return personText.includes(searchText)
   })
@@ -96,7 +105,7 @@ const App = () => {
   return (
     <>
       <h1>Phonebook</h1>
-
+      <Notification message={message} />
       <Filter search={searchPerson} handleChange={handleSearchChange} />
 
       <PersonForm
