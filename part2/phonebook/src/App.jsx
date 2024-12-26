@@ -6,6 +6,7 @@ import axios from 'axios'
 import './app.css'
 
 import personsServices from './services/persons'
+import Notifications from './components/Notifications'
 
 const BASE_URL = 'http://localhost:3001/persons'
 
@@ -14,6 +15,9 @@ const App = () => {
   const [newName, setNewName] = useState('') // input name form
   const [newNumber, setNewNumber] = useState('')
   const [searchPerson, setsearchPerson] = useState('')
+
+  const [text, setText] = useState('')
+  const [type, setType] = useState('')
 
   useEffect(() => {
     personsServices.getAll().then((dataPersons) => {
@@ -50,8 +54,23 @@ const App = () => {
             )
             setNewName('')
             setNewNumber('')
-            alert('Phone number changed succesfully')
+            setText(`Update ${personToChange.name} succesfully`)
+            setType('success')
           })
+          .catch((error) => {
+            if (error.response && error.response.status === 404) {
+              setText(
+                `The person ${personToChange.name} was already deleted from server`
+              )
+              setType('error')
+              setPersons(persons.filter((p) => p.id !== personToChange, id))
+            }
+          })
+
+        setTimeout(() => {
+          setText('')
+          setType('')
+        }, 5000)
       }
       return
     }
@@ -60,7 +79,14 @@ const App = () => {
       setPersons(persons.concat(data))
       setNewName('')
       setNewNumber('')
+      setText(`Added ${newName} succesfully`)
+      setType('success')
     })
+
+    setTimeout(() => {
+      setText('')
+      setType('')
+    }, 5000)
   }
 
   const handleButtonDelete = (event) => {
@@ -96,6 +122,7 @@ const App = () => {
   return (
     <>
       <h1>Phonebook</h1>
+      <Notifications text={text} type={type} />
 
       <Filter search={searchPerson} handleChange={handleSearchChange} />
 

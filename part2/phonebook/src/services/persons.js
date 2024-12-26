@@ -12,8 +12,12 @@ const create = (newObject) => {
 }
 
 const update = (id, newObject) => {
-  const request = axios.put(`${BASE_URL}/${id}`, newObject)
-  return request.then((res) => res.data)
+  return axios
+    .put(`${BASE_URL}/${id}`, newObject)
+    .then((res) => res.data)
+    .catch((error) => {
+      throw error
+    })
 }
 
 const deletePerson = (id) => {
