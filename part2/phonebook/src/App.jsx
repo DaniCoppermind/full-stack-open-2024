@@ -3,6 +3,9 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import axios from 'axios'
+import './app.css'
+
+import personsServices from './services/persons'
 
 const BASE_URL = 'http://localhost:3001/persons'
 
@@ -13,33 +16,62 @@ const App = () => {
   const [searchPerson, setsearchPerson] = useState('')
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then((response) => {
-      console.log('promise fulfilled')
-      setPersons(response.data)
+    personsServices.getAll().then((dataPersons) => {
+      setPersons(dataPersons)
     })
   }, [])
 
   const handleNameSubmit = (event) => {
     event.preventDefault()
 
-    let isAdded = persons.some((person) => {
-      return person.name === newName || person.number === newNumber
-    })
-
-    if (isAdded) {
-      return alert(`${newName} is already added to phonebook`)
-    }
-
     const personObject = {
       name: newName,
       number: newNumber,
     }
 
-    axios.post(BASE_URL, personObject).then((response) => {
-      setPersons(persons.concat(response.data))
+    let isAdded = persons.some((person) => person.name === newName)
+
+    if (isAdded) {
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        const personToChange = persons.find((person) => person.name === newName)
+        const changedPerson = { ...personToChange, number: newNumber }
+
+        personsServices
+          .update(personToChange.id, changedPerson)
+          .then((data) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== personToChange.id ? person : data
+              )
+            )
+            setNewName('')
+            setNewNumber('')
+            alert('Phone number changed succesfully')
+          })
+      }
+      return
+    }
+
+    personsServices.create(personObject).then((data) => {
+      setPersons(persons.concat(data))
       setNewName('')
       setNewNumber('')
     })
+  }
+
+  const handleButtonDelete = (event) => {
+    const button = event.target
+    const id = button.dataset.id
+    const name = button.dataset.name
+
+    if (window.confirm(`Delete ${name}?`)) {
+      personsServices.deletePerson(id)
+      setPersons(persons.filter((person) => person.id !== id))
+    }
   }
 
   const handleNameChange = (event) => {
@@ -75,7 +107,10 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
 
-      <Persons searchedPersons={searchedPersons} />
+      <Persons
+        searchedPersons={searchedPersons}
+        handleButtonDelete={handleButtonDelete}
+      />
     </>
   )
 }
