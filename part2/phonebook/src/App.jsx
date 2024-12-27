@@ -6,7 +6,8 @@ import axios from 'axios'
 import './app.css'
 
 import personsServices from './services/persons'
-import Notification from './components/Notification'
+import Notifications from './components/Notifications'
+
 
 const BASE_URL = 'http://localhost:3001/persons'
 
@@ -16,6 +17,9 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [searchPerson, setsearchPerson] = useState('')
   const [message, setMessage] = useState(null)
+
+  const [text, setText] = useState('')
+  const [type, setType] = useState('')
 
   useEffect(() => {
     personsServices.getAll().then((dataPersons) => {
@@ -52,8 +56,23 @@ const App = () => {
             )
             setNewName('')
             setNewNumber('')
-            alert('Phone number changed succesfully')
+            setText(`Update ${personToChange.name} succesfully`)
+            setType('success')
           })
+          .catch((error) => {
+            if (error.response && error.response.status === 404) {
+              setText(
+                `The person ${personToChange.name} was already deleted from server`
+              )
+              setType('error')
+              setPersons(persons.filter((p) => p.id !== personToChange, id))
+            }
+          })
+
+        setTimeout(() => {
+          setText('')
+          setType('')
+        }, 5000)
       }
       return
     }
@@ -62,11 +81,13 @@ const App = () => {
       setPersons(persons.concat(data))
       setNewName('')
       setNewNumber('')
-      setMessage(`Added ${newName} Correctly`)
+      setText(`Added ${newName} succesfully`)
+      setType('success')
     })
 
     setTimeout(() => {
-      setMessage(null)
+      setText('')
+      setType('')
     }, 5000)
   }
 
@@ -105,7 +126,8 @@ const App = () => {
   return (
     <>
       <h1>Phonebook</h1>
-      <Notification message={message} />
+      <Notifications text={text} type={type} />
+
       <Filter search={searchPerson} handleChange={handleSearchChange} />
 
       <PersonForm

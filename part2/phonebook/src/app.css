@@ -16,18 +16,20 @@
   }
 }
 
-.success-message {
+.notifications {
+  padding: 0.7rem 1rem;
   font-size: 18px;
-  color: greenyellow;
-  border: 3px solid green;
-  background: gray;
-  padding: 0.7rem 1.5rem;
+  font-weight: 700;
 }
 
-.error-message {
-  font-size: 18px;
-  color: red;
-  border: 3px solid red;
-  background: gray;
-  padding: 0.7rem 1.5rem;
+.success {
+  color: green;
+  background: lightgray;
+  border: 2px solid green;
 }
+
+.error {
+  color: red;
+  background: lightgray;
+  border: 2px solid red;
+
