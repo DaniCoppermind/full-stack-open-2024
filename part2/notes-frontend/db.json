@@ -1,36 +1,16 @@
 {
-  "notes": [
+  "posts": [
     {
-      "id": 1,
+      "content": "cafe",
       "important": true,
-      "content": "Hello world"
-    },
-    {
-      "content": "HOLAA",
-      "important": false,
       "id": 2
     },
     {
-      "content": "add",
+      "content": "ola",
       "important": false,
-      "id": 3
+      "id": 4
     }
   ],
-  "posts": [
-    {
-      "id": 1,
-      "title": "json-server",
-      "author": "typicode"
-    }
-  ],
-  "comments": [
-    {
-      "id": 1,
-      "body": "some comment",
-      "postId": 1
-    }
-  ],
-  "profile": {
-    "name": "typicode"
-  }
+  "comments": [],
+  "profile": {}
 }
