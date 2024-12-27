@@ -18,6 +18,7 @@ const update = (id, newObject) => {
     .catch((error) => {
       throw error
     })
+}
 
 const deletePerson = (id) => {
   const request = axios.delete(`${BASE_URL}/${id}`)

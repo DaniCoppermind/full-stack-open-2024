@@ -113,8 +113,6 @@ const App = () => {
     const personText = person.name
     const searchText = searchPerson
 
-    console.log(personText, searchText)
-
     return personText.includes(searchText)
   })
 
