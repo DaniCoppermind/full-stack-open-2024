@@ -8,7 +8,6 @@ import './app.css'
 import personsServices from './services/persons'
 import Notifications from './components/Notifications'
 
-
 const BASE_URL = 'http://localhost:3001/persons'
 
 const App = () => {
@@ -16,7 +15,6 @@ const App = () => {
   const [newName, setNewName] = useState('') // input name form
   const [newNumber, setNewNumber] = useState('')
   const [searchPerson, setsearchPerson] = useState('')
-  const [message, setMessage] = useState(null)
 
   const [text, setText] = useState('')
   const [type, setType] = useState('')
