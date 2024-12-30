@@ -6,9 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build:ui": "rimraf dist && cd ../../../part2/notes-frontend && npm run build && copyfiles dist ../../../part3/courseInfo/backend",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Daniel García",
   "license": "MIT",
@@ -22,3 +20,4 @@
     "express": "^4.21.2"
   }
 }
+
