@@ -3,6 +3,7 @@ const cors = require('cors')
 const app = express()
 
 app.use(cors())
+app.use(express.static('dist'))
 app.use(express.json())
 
 const generateId = () => {
@@ -65,7 +66,6 @@ app.post('/api/notes', (request, response) => {
 })
 
 app.get('/', (request, response) => {
-  console.log('raiz')
   response.send('<h1>Hello World!</h1>')
 })
 
