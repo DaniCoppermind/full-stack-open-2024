@@ -2,7 +2,6 @@ import React from 'react'
 import personsServices from '../services/persons'
 
 function Persons({ searchedPersons, handleButtonDelete }) {
-  console.log(searchedPersons)
   return (
     <>
       <h2>Numbers</h2>
