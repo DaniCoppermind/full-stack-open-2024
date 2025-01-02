@@ -1,46 +1,18 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const Phonebook = require('./models/phonebook')
 
 const app = express()
 
 morgan.token('body', (req) => JSON.stringify(req.body))
 
-app.use(express.static('dist'))
 app.use(cors())
+app.use(express.static('dist'))
 app.use(
   morgan(':method :url :status :res[content-length] - :response-time ms :body')
 )
-
-app.use(express.json())
-
-let phonebook = [
-  {
-    id: 1,
-    name: 'Daniel García',
-    number: '040-123456',
-  },
-  {
-    id: 2,
-    name: 'Ada Lovelace',
-    number: '39-44-5323523',
-  },
-  {
-    id: 3,
-    name: 'Dan Abramov',
-    number: '12-43-234345',
-  },
-  {
-    id: 4,
-    name: 'Mary Poppendieck',
-    number: '39-23-6423122',
-  },
-]
-
-const generateId = () => {
-  return Math.floor(Math.random() * Date.now()).toString(16)
-}
-
 app.use(express.json())
 
 app.post('/api/persons', (req, res) => {
@@ -52,38 +24,43 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
-  const nameExists = phonebook.some((p) => p.name === body.name)
+  Phonebook.findOne({ name: body.name })
+    .then((existingPerson) => {
+      if (existingPerson) {
+        return res.status(400).json({
+          error: 'Name already exists in phonebook',
+        })
+      }
 
-  if (nameExists) {
-    return res.status(400).json({
-      error: 'Name already exists in phonebook',
+      const person = new Phonebook({
+        name: body.name,
+        number: body.number,
+      })
+
+      person
+        .save()
+        .then((savedPerson) => {
+          res.json(savedPerson)
+        })
+        .catch((error) => {
+          res.status(500).json({ error: 'Failed to save person' })
+        })
     })
-  }
-
-  const person = {
-    name: body.name,
-    number: body.number,
-    id: generateId(),
-  }
-
-  phonebook = phonebook.concat(person)
-
-  res.json(person)
+    .catch((error) => {
+      res.status(500).json({ error: 'Failed to check existing person' })
+    })
 })
 
 app.get('/api/persons', (req, res) => {
-  res.json(phonebook)
+  Phonebook.find({}).then((person) => {
+    res.json(person)
+  })
 })
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const person = phonebook.find((p) => p.id === id)
-
-  if (person) {
+  Phonebook.findById(req.params.id).then((person) => {
     res.json(person)
-  } else {
-    res.status(404).end()
-  }
+  })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -103,4 +80,6 @@ app.get('/info', (req, res) => {
 })
 
 const PORT = process.env.PORT || 3001
-app.listen(PORT, () => {})
+app.listen(PORT, () => {
+  console.log('server running')
+})
