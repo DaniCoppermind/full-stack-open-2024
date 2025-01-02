@@ -6,20 +6,18 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:ui": "rimraf dist && cd ../../part2/phonebook_frontend && npm run build && copy -r dist ../../part3/phonebook_backend",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
+    "build:ui": "@powershell Remove-Item -Recurse -Force dist && cd ../../part2/phonebook_frontend && npm run build && @powershell Copy-Item dist -Recurse ../../part3/phonebook_backend"
   },
   "author": "Daniel García",
   "license": "ISC",
   "description": "",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "mongoose": "^8.9.3"
   },
   "devDependencies": {
-    "copyfiles": "^2.4.1",
     "morgan": "^1.10.0",
-    "nodemon": "^3.1.9",
-    "rimraf": "^6.0.1"
+    "nodemon": "^3.1.9"
   }
 }
