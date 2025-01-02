@@ -6,18 +6,17 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "@powershell Remove-Item -Recurse -Force dist && cd ../../../part2/notes-frontend && npm run build && @powershell Copy-Item dist -Recurse ../../part3/courseInfo/backend"
   },
   "author": "Daniel García",
   "license": "MIT",
   "devDependencies": {
-    "copyfiles": "^2.4.1",
-    "nodemon": "^3.1.9",
-    "rimraf": "^6.0.1"
+    "nodemon": "^3.1.9"
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "mongoose": "^8.9.3"
   }
 }
-
