@@ -2,9 +2,8 @@ require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
-const Phonebook = require('./models/phonebook')
-
 const app = express()
+const Phonebook = require('./models/phonebook')
 
 morgan.token('body', (req) => JSON.stringify(req.body))
 
@@ -15,7 +14,7 @@ app.use(
 )
 app.use(express.json())
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const body = req.body
 
   if (!body.name || !body.number) {
@@ -24,31 +23,42 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
-  Phonebook.findOne({ name: body.name })
-    .then((existingPerson) => {
-      if (existingPerson) {
-        return res.status(400).json({
-          error: 'Name already exists in phonebook',
-        })
-      }
+  const person = new Phonebook({
+    name: body.name,
+    number: body.number,
+  })
 
-      const person = new Phonebook({
-        name: body.name,
-        number: body.number,
-      })
+  person
+    .save()
+    .then((savedPerson) => {
+      res.json(savedPerson)
+    })
+    .catch((error) => next(error))
+})
 
-      person
-        .save()
-        .then((savedPerson) => {
-          res.json(savedPerson)
-        })
-        .catch((error) => {
-          res.status(500).json({ error: 'Failed to save person' })
-        })
+app.put('/api/persons/:id', (req, res, next) => {
+  const body = req.body
+
+  if (!body.name || !body.number) {
+    return res.status(400).json({
+      error: 'Information Missing, please try again',
     })
-    .catch((error) => {
-      res.status(500).json({ error: 'Failed to check existing person' })
+  }
+
+  const updatedPerson = {
+    name: body.name,
+    number: body.number,
+  }
+
+  Phonebook.findByIdAndUpdate(req.params.id, updatedPerson, {
+    new: true,
+    runValidators: true,
+    context: 'query',
+  })
+    .then((updatedPerson) => {
+      res.json(updatedPerson)
     })
+    .catch((error) => next(error))
 })
 
 app.get('/api/persons', (req, res) => {
@@ -57,17 +67,24 @@ app.get('/api/persons', (req, res) => {
   })
 })
 
-app.get('/api/persons/:id', (req, res) => {
-  Phonebook.findById(req.params.id).then((person) => {
-    res.json(person)
-  })
+app.get('/api/persons/:id', (req, res, next) => {
+  Phonebook.findById(req.params.id)
+    .then((person) => {
+      if (person) {
+        res.json(person)
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch((error) => next(error))
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  phonebook = phonebook.filter((p) => p.id !== id)
-
-  res.status(204).end()
+app.delete('/api/persons/:id', (req, res, next) => {
+  Phonebook.findByIdAndDelete(req.params.id)
+    .then((result) => {
+      res.status(204).end()
+    })
+    .catch((error) => next(error))
 })
 
 app.get('/info', (req, res) => {
@@ -78,6 +95,18 @@ app.get('/info', (req, res) => {
     `<p>Phonebook has info for ${totalPersons} people</p> <p>${dataTime}</p>`
   )
 })
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {

@@ -13,7 +13,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [searchPerson, setsearchPerson] = useState('')
 
-  const [text, setText] = useState('')
+  const [notification, setNotification] = useState('')
   const [type, setType] = useState('')
 
   useEffect(() => {
@@ -30,70 +30,87 @@ const App = () => {
       number: newNumber,
     }
 
-    let isAdded = persons.some((person) => person.name === newName)
+    const existingPerson = persons.find((person) => person.name === newName)
 
-    if (isAdded) {
+    if (existingPerson) {
       if (
         window.confirm(
           `${newName} is already added to phonebook, replace the old number with a new one?`
         )
       ) {
-        const personToChange = persons.find((person) => person.name === newName)
-        const changedPerson = { ...personToChange, number: newNumber }
-
         personsServices
-          .update(personToChange.id, changedPerson)
-          .then((data) => {
+          .update(existingPerson.id, personObject)
+          .then((returnedPerson) => {
             setPersons(
               persons.map((person) =>
-                person.id !== personToChange.id ? person : data
+                person.id !== existingPerson.id ? person : returnedPerson
               )
             )
-            setNewName('')
-            setNewNumber('')
-            setText(`Update ${personToChange.name} succesfully`)
+            setNotification(`Updated ${returnedPerson.name}`)
             setType('success')
+            setTimeout(() => {
+              setNotification(null)
+              setType('')
+            }, 5000)
           })
           .catch((error) => {
-            if (error.response && error.response.status === 404) {
-              setText(
-                `The person ${personToChange.name} was already deleted from server`
-              )
-              setType('error')
-              setPersons(persons.filter((p) => p.id !== personToChange, id))
-            }
+            setNotification(`Error updating ${existingPerson.name}`)
+            setType('error')
+            setTimeout(() => {
+              setNotification(null)
+              setType('')
+            }, 5000)
           })
-
-        setTimeout(() => {
-          setText('')
-          setType('')
-        }, 5000)
       }
-      return
+    } else {
+      personsServices
+        .create(personObject)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson))
+          setNotification(`Added ${returnedPerson.name}`)
+          setType('success')
+          setTimeout(() => {
+            setNotification(null)
+            setType('')
+          }, 5000)
+        })
+        .catch((error) => {
+          setNotification(`Error adding ${personObject.name}`)
+          setType('error')
+          setTimeout(() => {
+            setNotification(null)
+            setType('')
+          }, 5000)
+        })
     }
-
-    personsServices.create(personObject).then((data) => {
-      setPersons(persons.concat(data))
-      setNewName('')
-      setNewNumber('')
-      setText(`Added ${newName} succesfully`)
-      setType('success')
-    })
-
-    setTimeout(() => {
-      setText('')
-      setType('')
-    }, 5000)
+    setNewName('')
+    setNewNumber('')
   }
 
   const handleButtonDelete = (event) => {
-    const button = event.target
-    const id = button.dataset.id
-    const name = button.dataset.name
+    const id = event.target.dataset.id
+    const name = event.target.dataset.name
 
     if (window.confirm(`Delete ${name}?`)) {
-      personsServices.deletePerson(id)
-      setPersons(persons.filter((person) => person.id !== id))
+      personsServices
+        .deletePerson(id)
+        .then(() => {
+          setPersons(persons.filter((person) => person.id !== id))
+          setNotification(`Deleted ${name}`)
+          setType('success')
+          setTimeout(() => {
+            setNotification(null)
+            setType('')
+          }, 5000)
+        })
+        .catch((error) => {
+          setNotification(`Error deleting ${name}`)
+          setType('error')
+          setTimeout(() => {
+            setNotification(null)
+            setType('')
+          }, 5000)
+        })
     }
   }
 
@@ -109,17 +126,14 @@ const App = () => {
     setsearchPerson(event.target.value)
   }
 
-  const searchedPersons = persons.filter((person) => {
-    const personText = person.name
-    const searchText = searchPerson
-
-    return personText.includes(searchText)
-  })
+  const searchedPersons = persons.filter((person) =>
+    person.name.toLowerCase().includes(searchPerson.toLowerCase())
+  )
 
   return (
     <>
       <h1>Phonebook</h1>
-      <Notifications text={text} type={type} />
+      <Notifications notification={notification} type={type} />
 
       <Filter search={searchPerson} handleChange={handleSearchChange} />
 

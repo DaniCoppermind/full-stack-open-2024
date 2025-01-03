@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Notifications = ({ type, text }) => {
-  if (text === '') {
+const Notifications = ({ type, notification }) => {
+  if (notification === '') {
     return ''
   }
 
-  return <div className={`notifications ${type}`}>{text}</div>
+  return <div className={`notifications ${type}`}>{notification}</div>
 }
 
 export default Notifications
