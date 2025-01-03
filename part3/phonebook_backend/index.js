@@ -17,12 +17,6 @@ app.use(express.json())
 app.post('/api/persons', (req, res, next) => {
   const body = req.body
 
-  if (!body.name || !body.number) {
-    return res.status(400).json({
-      error: 'Information Missing, please try again',
-    })
-  }
-
   const person = new Phonebook({
     name: body.name,
     number: body.number,
@@ -38,16 +32,17 @@ app.post('/api/persons', (req, res, next) => {
 
 app.put('/api/persons/:id', (req, res, next) => {
   const body = req.body
+  const { name, number } = body
 
-  if (!body.name || !body.number) {
+  if (!name || !number) {
     return res.status(400).json({
       error: 'Information Missing, please try again',
     })
   }
 
   const updatedPerson = {
-    name: body.name,
-    number: body.number,
+    name: name,
+    number: number,
   }
 
   Phonebook.findByIdAndUpdate(req.params.id, updatedPerson, {
@@ -101,6 +96,8 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)

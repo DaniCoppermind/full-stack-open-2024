@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
-import './app.css'
-
 import personsServices from './services/persons'
 import Notifications from './components/Notifications'
+import './app.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -54,7 +53,9 @@ const App = () => {
             }, 5000)
           })
           .catch((error) => {
-            setNotification(`Error updating ${existingPerson.name}`)
+            setNotification(
+              `Error updating ${existingPerson.name}: ${error.response.data.error}`
+            )
             setType('error')
             setTimeout(() => {
               setNotification(null)
@@ -75,7 +76,7 @@ const App = () => {
           }, 5000)
         })
         .catch((error) => {
-          setNotification(`Error adding ${personObject.name}`)
+          setNotification(error.response.data.error)
           setType('error')
           setTimeout(() => {
             setNotification(null)
