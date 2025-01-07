@@ -31,6 +31,12 @@ const initialBlogs = [
     url: 'https://www.goodreads.com/book/show/54511228-dawnshard',
     likes: 1100,
   },
+  {
+    title: 'Lorem ipsum',
+    author: 'Author Test',
+    url: 'http://example.com',
+    likes: 2,
+  },
 ]
 
 const nonExistingId = async () => {
