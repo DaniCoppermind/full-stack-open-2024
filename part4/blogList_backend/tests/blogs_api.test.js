@@ -78,6 +78,48 @@ describe('Blog Saves Management', () => {
   })
 })
 
+describe('Updating a blog', () => {
+  test('succeeds with status code 200 if id is valid', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+
+    const updatedBlogData = {
+      ...blogToUpdate,
+      likes: blogToUpdate.likes + 1,
+    }
+
+    const response = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlogData)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const updatedBlog = response.body
+    assert.strictEqual(updatedBlog.likes, blogToUpdate.likes + 1)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const updatedBlogFromDb = blogsAtEnd.find(
+      (blog) => blog.id === blogToUpdate.id
+    )
+    assert.strictEqual(updatedBlogFromDb.likes, blogToUpdate.likes + 1)
+  })
+})
+
+describe('Deletion of a blog', () => {
+  test('succeeds with status code 204 if id is valid', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
+
+    const titles = blogsAtEnd.map((b) => b.title)
+    assert(!titles.includes(blogToDelete.title))
+  })
+})
+
 after(async () => {
   await mongoose.connection.close()
 })

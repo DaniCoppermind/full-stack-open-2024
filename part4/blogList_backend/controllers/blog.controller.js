@@ -24,4 +24,41 @@ blogRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog)
 })
 
+blogRouter.put('/:id', async (request, response) => {
+  const { title, author, url, likes } = request.body
+
+  const blog = {
+    title,
+    author,
+    url,
+    likes,
+  }
+
+  try {
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+      new: true,
+    })
+    if (updatedBlog) {
+      response.json(updatedBlog)
+    } else {
+      response.status(404).end()
+    }
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+})
+
+blogRouter.delete('/:id', async (request, response) => {
+  try {
+    const deletedBlog = await Blog.findByIdAndDelete(request.params.id)
+    if (deletedBlog) {
+      response.status(204).end()
+    } else {
+      response.status(404).end()
+    }
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+})
+
 module.exports = blogRouter
