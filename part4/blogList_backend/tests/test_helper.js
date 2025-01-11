@@ -3,40 +3,16 @@ const User = require('../models/user.model')
 
 const initialBlogs = [
   {
-    title: 'El Camino de los Reyes',
-    author: 'Brandon Sanderson',
-    url: 'https://www.goodreads.com/book/show/7235533-the-way-of-kings',
-    likes: 1500,
+    title: 'First Blog',
+    author: 'Author One',
+    url: 'http://example.com/1',
+    likes: 10,
   },
   {
-    title: 'Palabras Radiantes',
-    author: 'Brandon Sanderson',
-    url: 'https://www.goodreads.com/book/show/17332218-words-of-radiance',
-    likes: 1400,
-  },
-  {
-    title: 'Juramentada',
-    author: 'Brandon Sanderson',
-    url: 'https://www.goodreads.com/book/show/34002132-oathbringer',
-    likes: 1300,
-  },
-  {
-    title: 'El Ritmo de la Guerra',
-    author: 'Brandon Sanderson',
-    url: 'https://www.goodreads.com/book/show/49021976-rhythm-of-war',
-    likes: 1200,
-  },
-  {
-    title: 'Dawnshard',
-    author: 'Brandon Sanderson',
-    url: 'https://www.goodreads.com/book/show/54511228-dawnshard',
-    likes: 1100,
-  },
-  {
-    title: 'Lorem ipsum',
-    author: 'Author Test',
-    url: 'http://example.com',
-    likes: 2,
+    title: 'Second Blog',
+    author: 'Author Two',
+    url: 'http://example.com/2',
+    likes: 20,
   },
 ]
 
