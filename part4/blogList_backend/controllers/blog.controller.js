@@ -25,12 +25,12 @@ blogRouter.get('/:id', async (request, response) => {
 })
 
 blogRouter.post('/', async (request, response) => {
-  const { title, author, url, likes, userId } = request.body
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' })
+  const { title, author, url, likes } = request.body
+  const user = request.user
+
+  if (!user) {
+    return response.status(401).json({ error: 'user not authenticated' })
   }
-  const user = await User.findById(decodedToken.id)
 
   if (!title || !url) {
     return response.status(400).json({ error: 'title and url are required' })
@@ -41,14 +41,17 @@ blogRouter.post('/', async (request, response) => {
     author,
     url,
     likes: likes || 0,
-    user: user.id,
+    user: user._id,
   })
 
-  const savedBlog = await blog.save()
-  user.blogs = user.blogs.concat(savedBlog._id)
-
-  await user.save()
-  response.status(201).json(savedBlog)
+  try {
+    const savedBlog = await blog.save()
+    user.blogs = user.blogs.concat(savedBlog._id)
+    await user.save()
+    response.status(201).json(savedBlog)
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
 })
 
 blogRouter.put('/:id', async (request, response) => {
@@ -75,19 +78,15 @@ blogRouter.put('/:id', async (request, response) => {
   }
 })
 
-blogRouter.delete('/:id', async (request, response) => {
+blogRouter.delete('/:id', async (request, response, next) => {
   try {
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token invalid' })
-    }
-
+    const user = request.user
     const blog = await Blog.findById(request.params.id)
     if (!blog) {
       return response.status(404).json({ error: 'blog not found' })
     }
 
-    if (blog.user.toString() !== decodedToken.id) {
+    if (blog.user.toString() !== user._id.toString()) {
       return response.status(401).json({ error: 'unauthorized' })
     }
 

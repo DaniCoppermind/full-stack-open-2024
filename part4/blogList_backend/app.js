@@ -28,9 +28,10 @@ mongoose
 
 app.use(cors())
 app.use(express.json())
-app.use(middleware.tokenExtractor)
 
-app.use('/api/blogs', blogRouter)
+app.use(middleware.tokenExtractor)
+app.use('/api/blogs', middleware.userExtractor, blogRouter)
+
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 
