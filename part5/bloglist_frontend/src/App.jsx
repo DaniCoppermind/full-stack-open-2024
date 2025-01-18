@@ -83,6 +83,32 @@ function App() {
     }
   }
 
+  const deleteBlog = async (id) => {
+    const blog = blogs.find((b) => b.id === id)
+    const confirmDelete = window.confirm(
+      `Do you really want to delete the blog "${blog.title}" by ${blog.author}?`
+    )
+    if (!confirmDelete) {
+      return
+    }
+
+    try {
+      await blogService.remove(id)
+      setBlogs(blogs.filter((b) => b.id !== id))
+      setMessageType('success')
+      setMessage('Blog deleted successfully')
+      setTimeout(() => {
+        setMessage('')
+      }, 5000)
+    } catch (exception) {
+      setMessageType('error')
+      setMessage('Error deleting blog')
+      setTimeout(() => {
+        setMessage('')
+      }, 5000)
+    }
+  }
+
   const handleLike = async (id) => {
     const blog = blogs.find((b) => b.id === id)
     const updatedBlog = { ...blog, likes: blog.likes + 1, user: blog.user.id }
@@ -99,6 +125,8 @@ function App() {
       }, 5000)
     }
   }
+
+  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
   return (
     <div>
@@ -124,11 +152,12 @@ function App() {
             <BlogForm addBlog={addBlog} />
           </Togglable>
 
-          {blogs.map((blog) => (
+          {sortedBlogs.map((blog) => (
             <Blog
               key={blog.id}
               blog={blog}
               handleLike={() => handleLike(blog.id)}
+              handleDelete={() => deleteBlog(blog.id)}
             />
           ))}
         </section>
