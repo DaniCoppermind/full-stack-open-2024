@@ -83,6 +83,23 @@ function App() {
     }
   }
 
+  const handleLike = async (id) => {
+    const blog = blogs.find((b) => b.id === id)
+    const updatedBlog = { ...blog, likes: blog.likes + 1, user: blog.user.id }
+
+    try {
+      const returnedBlog = await blogService.update(id, updatedBlog)
+      const updatedReturnedBlog = { ...returnedBlog, user: blog.user }
+      setBlogs(blogs.map((b) => (b.id !== id ? b : updatedReturnedBlog)))
+    } catch (exception) {
+      setMessageType('error')
+      setMessage('Error liking blog')
+      setTimeout(() => {
+        setMessage('')
+      }, 5000)
+    }
+  }
+
   return (
     <div>
       <h2>blogs</h2>
@@ -108,7 +125,11 @@ function App() {
           </Togglable>
 
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              handleLike={() => handleLike(blog.id)}
+            />
           ))}
         </section>
       )}
