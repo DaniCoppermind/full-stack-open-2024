@@ -1,22 +1,36 @@
+import Togglable from './Togglable'
+
 const Blog = ({ blog }) => {
   const blogStyle = {
-    padding: 10,
-    border: '1px solid #ccc',
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
     marginBottom: 5,
-    borderRadius: 5,
-    boxShadow: '0 2px 3px rgba(0, 0, 0, 0.1)',
+  }
+
+  const likesStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
   }
 
   return (
     <div style={blogStyle}>
-      <p>
-        <strong>{blog.title} </strong>by
-      </p>
       <div>
-        <p>
-          {blog.author} - {blog.likes} likes
-        </p>
+        {blog.title} {blog.author}
       </div>
+      <Togglable buttonLabel='View'>
+        <div>
+          <a href={blog.url} target='_blank'>
+            {blog.url}
+          </a>
+          <div style={likesStyle}>
+            <p>{blog.likes}</p>
+            <button>like</button>
+          </div>
+        </div>
+      </Togglable>
     </div>
   )
 }
