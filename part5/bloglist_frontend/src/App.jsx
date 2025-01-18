@@ -55,6 +55,7 @@ function App() {
       setTimeout(() => {
         setMessage('')
       }, 5000)
+      console.log(exception)
     }
   }
 
@@ -80,6 +81,7 @@ function App() {
       setTimeout(() => {
         setMessage('')
       }, 5000)
+      console.log(exception)
     }
   }
 
@@ -106,6 +108,7 @@ function App() {
       setTimeout(() => {
         setMessage('')
       }, 5000)
+      console.log(exception)
     }
   }
 
@@ -123,6 +126,7 @@ function App() {
       setTimeout(() => {
         setMessage('')
       }, 5000)
+      console.log(exception)
     }
   }
 
