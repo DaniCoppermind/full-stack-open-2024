@@ -6,7 +6,7 @@ const LoginForm = ({
   setPassword,
 }) => {
   return (
-    <form onSubmit={handleLogin}>
+    <form data-testid='form' onSubmit={handleLogin}>
       <div>
         Username
         <input
