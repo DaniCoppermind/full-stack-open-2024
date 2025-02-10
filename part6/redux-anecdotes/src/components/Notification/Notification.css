@@ -1,0 +1,16 @@
+.notification {
+  padding: 15px;
+  margin: 20px 0;
+  border: 1px solid #4caf50;
+  border-radius: 5px;
+  background-color: #dff0d8;
+  color: #3c763d;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  display: none; /* Ocultar por defecto */
+}
+
+.notification.show {
+  display: block; /* Mostrar cuando haya notificación */
+}

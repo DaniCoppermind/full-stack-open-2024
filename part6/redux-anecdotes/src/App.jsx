@@ -3,6 +3,7 @@ import AnecdoteList from './components/AnecdoteList/AnecdoteList'
 import Filter from './components/Filter/Filter'
 import './App.css'
 import Footer from './components/Footer/Footer'
+import Notification from './components/Notification/Notification'
 
 const App = () => {
   return (
@@ -10,6 +11,7 @@ const App = () => {
       <h1 className='app-title'>Anecdotes</h1>
       <AnecdotesForm />
       <Filter />
+      <Notification />
       <AnecdoteList />
       <Footer />
     </main>

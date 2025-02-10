@@ -1,6 +1,10 @@
 /* eslint-disable react/prop-types */
 import { useDispatch, useSelector } from 'react-redux'
 import { sumLike, viewData } from '../../reducers/anecdoteReducer'
+import {
+  showNotification,
+  clearNotification,
+} from '../../reducers/notificationReducer'
 import './AnecdoteList.css'
 
 const Anecdote = ({ anecdote, handleLike, handleViewData }) => {
@@ -42,6 +46,14 @@ const AnecdoteList = () => {
   // Redux Toolkit para devolver el estado inicial de las anécdotas, será inmutable, por lo que tendrás que copiarlo para ordenarlas
   const sortAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes)
 
+  const handleLike = (anecdote) => {
+    dispatch(sumLike(anecdote.id))
+    dispatch(showNotification(`you voted: '${anecdote.content}'`))
+    setTimeout(() => {
+      dispatch(clearNotification())
+    }, 5000)
+  }
+
   return (
     <div className='anecdote-list-container'>
       {sortAnecdotes.length === 0 ? (
@@ -51,7 +63,7 @@ const AnecdoteList = () => {
           <Anecdote
             anecdote={anecdote}
             key={anecdote.id}
-            handleLike={() => dispatch(sumLike(anecdote.id))}
+            handleLike={() => handleLike(anecdote)}
             handleViewData={() => dispatch(viewData(anecdote.id))}
           />
         ))
