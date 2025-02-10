@@ -1,4 +1,6 @@
 /* eslint-disable no-case-declarations */
+import { createSlice, current } from '@reduxjs/toolkit'
+
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -18,61 +20,94 @@ const asObject = (anecdote) => {
   }
 }
 
-export const createAnecdote = (content) => {
-  return {
-    type: 'NEW_ANECDOTE',
-    payload: {
-      content,
-      id: getId(),
-      votes: 0,
-    },
-  }
-}
-
-export const viewData = (id) => {
-  return {
-    type: 'VIEW_DATA',
-    payload: {
-      id,
-    },
-  }
-}
-
-export const sumLike = (id) => {
-  return {
-    type: 'LIKE_ANECDOTE',
-    payload: {
-      id,
-    },
-  }
-}
-
 const initialState = anecdotesAtStart.map(asObject)
 
-const anecdoteReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'NEW_ANECDOTE':
-      return [...state, action.payload]
-    case 'VIEW_DATA':
-      const anecdoteToView = state.find(
-        (anecdote) => anecdote.id === action.payload.id
-      )
-      console.log(anecdoteToView)
+const anecdoteSlice = createSlice({
+  name: 'anecdotes',
+  initialState,
+  reducers: {
+    createAnecdote(state, action) {
+      const content = action.payload
+      state.push({
+        content,
+        votes: 0,
+        id: getId(),
+      })
+    },
+    viewData(state, action) {
+      const id = action.payload
+      const anecdote = state.find((a) => a.id === id)
+      console.log(anecdote)
       return state
-    case 'LIKE_ANECDOTE':
-      const id = action.payload.id
-
-      const anecdoteToChange = state.find((anecdote) => anecdote.id === id)
+    },
+    sumLike(state, action) {
+      const id = action.payload
+      const anecdoteToChange = state.find((a) => a.id === id)
       const changedAnecdote = {
         ...anecdoteToChange,
         votes: anecdoteToChange.votes + 1,
       }
-      return state.map((anecdote) =>
-        anecdote.id !== id ? anecdote : changedAnecdote
-      )
-    default:
-      return state
-  }
-}
+      console.log(current(state))
 
-export default anecdoteReducer
+      return state.map((a) => (a.id !== id ? a : changedAnecdote))
+    },
+  },
+})
+
+export const { createAnecdote, viewData, sumLike } = anecdoteSlice.actions
+export default anecdoteSlice.reducer
+
+// export const createAnecdote = (content) => {
+//   return {
+//     type: 'NEW_ANECDOTE',
+//     payload: {
+//       content,
+//       id: getId(),
+//       votes: 0,
+//     },
+//   }
+// }
+
+// export const viewData = (id) => {
+//   return {
+//     type: 'VIEW_DATA',
+//     payload: {
+//       id,
+//     },
+//   }
+// }
+
+// export const sumLike = (id) => {
+//   return {
+//     type: 'LIKE_ANECDOTE',
+//     payload: {
+//       id,
+//     },
+//   }
+// }
+
+// const anecdoteReducer = (state = initialState, action) => {
+//   switch (action.type) {
+//     case 'NEW_ANECDOTE':
+//       return [...state, action.payload]
+//     case 'VIEW_DATA':
+//       const anecdoteToView = state.find(
+//         (anecdote) => anecdote.id === action.payload.id
+//       )
+//       console.log(anecdoteToView)
+//       return state
+//     case 'LIKE_ANECDOTE':
+//       const id = action.payload.id
+
+//       const anecdoteToChange = state.find((anecdote) => anecdote.id === id)
+//       const changedAnecdote = {
+//         ...anecdoteToChange,
+//         votes: anecdoteToChange.votes + 1,
+//       }
+//       return state.map((anecdote) =>
+//         anecdote.id !== id ? anecdote : changedAnecdote
+//       )
+//     default:
+//       return state
+//   }
+// }

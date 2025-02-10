@@ -39,7 +39,8 @@ const AnecdoteList = () => {
     )
   })
 
-  const sortAnecdotes = anecdotes.sort((a, b) => b.votes - a.votes)
+  // Redux Toolkit para devolver el estado inicial de las anécdotas, será inmutable, por lo que tendrás que copiarlo para ordenarlas
+  const sortAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes)
 
   return (
     <div className='anecdote-list-container'>
