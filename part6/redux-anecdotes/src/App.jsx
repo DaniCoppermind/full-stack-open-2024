@@ -1,14 +1,18 @@
-import AnecdotesForm from './components/AnecdoteForm'
-import AnecdoteList from './components/AnecdoteList'
+import AnecdotesForm from './components/AnecdoteForm/AnecdoteForm'
+import AnecdoteList from './components/AnecdoteList/AnecdoteList'
+import Filter from './components/Filter/Filter'
+import './App.css'
+import Footer from './components/Footer/Footer'
 
 const App = () => {
   return (
-    <div>
-      <h2>Anecdotes</h2>
-
+    <main className='app-container'>
+      <h1 className='app-title'>Anecdotes</h1>
       <AnecdotesForm />
+      <Filter />
       <AnecdoteList />
-    </div>
+      <Footer />
+    </main>
   )
 }
 

@@ -1,0 +1,61 @@
+.anecdote-container {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px;
+  background-color: #f9f9f9;
+  flex: 1 1 calc(33.333% - 20px);
+  box-sizing: border-box;
+}
+
+.anecdote-content {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.anecdote-votes {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #555;
+}
+
+.anecdote-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 8px;
+}
+
+.anecdote-button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.anecdote-vote-button {
+  background-color: #4caf50;
+  color: white;
+}
+
+.anecdote-view-button {
+  background-color: #008cba;
+  color: white;
+}
+
+.anecdote-list-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.anecdote-not-found {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px;
+  background-color: #f9f9f9;
+  text-align: center;
+  width: 100%;
+}
