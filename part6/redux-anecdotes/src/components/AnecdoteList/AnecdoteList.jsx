@@ -1,11 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useDispatch, useSelector } from 'react-redux'
-import { sumLike, viewData } from '../../reducers/anecdoteReducer'
-import {
-  showNotification,
-  clearNotification,
-} from '../../reducers/notificationReducer'
-import serviceAnecdote from '../../services/anecdotes'
+import { likeAnecdote, viewData } from '../../reducers/anecdoteReducer'
+import { setNotification } from '../../reducers/notificationReducer'
 import './AnecdoteList.css'
 
 const Anecdote = ({ anecdote, handleLike, handleViewData }) => {
@@ -53,12 +49,8 @@ const AnecdoteList = () => {
       ...anecdoteToChange,
       votes: anecdoteToChange.votes + 1,
     }
-    const updatedAnecdote = await serviceAnecdote.update(id, changedAnecdote)
-    dispatch(sumLike(updatedAnecdote))
-    dispatch(showNotification(`you voted: '${updatedAnecdote.content}'`))
-    setTimeout(() => {
-      dispatch(clearNotification())
-    }, 5000)
+    dispatch(setNotification(`you voted '${changedAnecdote.content}'`, 2500))
+    dispatch(likeAnecdote(id, changedAnecdote))
   }
 
   return (
