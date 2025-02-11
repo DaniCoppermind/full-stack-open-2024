@@ -5,6 +5,7 @@ import {
   showNotification,
   clearNotification,
 } from '../../reducers/notificationReducer'
+import serviceAnecdote from '../../services/anecdotes'
 import './AnecdoteList.css'
 
 const Anecdote = ({ anecdote, handleLike, handleViewData }) => {
@@ -46,9 +47,15 @@ const AnecdoteList = () => {
   // Redux Toolkit para devolver el estado inicial de las anécdotas, será inmutable, por lo que tendrás que copiarlo para ordenarlas
   const sortAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes)
 
-  const handleLike = (anecdote) => {
-    dispatch(sumLike(anecdote.id))
-    dispatch(showNotification(`you voted: '${anecdote.content}'`))
+  const handleLike = async (id) => {
+    const anecdoteToChange = anecdotes.find((a) => a.id === id)
+    const changedAnecdote = {
+      ...anecdoteToChange,
+      votes: anecdoteToChange.votes + 1,
+    }
+    const updatedAnecdote = await serviceAnecdote.update(id, changedAnecdote)
+    dispatch(sumLike(updatedAnecdote))
+    dispatch(showNotification(`you voted: '${updatedAnecdote.content}'`))
     setTimeout(() => {
       dispatch(clearNotification())
     }, 5000)
@@ -63,7 +70,7 @@ const AnecdoteList = () => {
           <Anecdote
             anecdote={anecdote}
             key={anecdote.id}
-            handleLike={() => handleLike(anecdote)}
+            handleLike={() => handleLike(anecdote.id)}
             handleViewData={() => dispatch(viewData(anecdote.id))}
           />
         ))

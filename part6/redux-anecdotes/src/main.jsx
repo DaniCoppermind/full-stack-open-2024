@@ -3,8 +3,9 @@ import { configureStore } from '@reduxjs/toolkit'
 import { Provider } from 'react-redux'
 import App from './App'
 
+import anecdoteService from './services/anecdotes'
 import filterReducer from './reducers/filterReducer'
-import anecdoteReducer from './reducers/anecdoteReducer'
+import anecdoteReducer, { setAnecdotes } from './reducers/anecdoteReducer'
 import notificationReducer from './reducers/notificationReducer'
 
 const store = configureStore({
@@ -15,7 +16,9 @@ const store = configureStore({
   },
 })
 
-console.log(store.getState())
+anecdoteService
+  .getAll()
+  .then((anecdote) => store.dispatch(setAnecdotes(anecdote)))
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
