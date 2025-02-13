@@ -7,7 +7,7 @@ import Footer from './components/Footer'
 import CreateNew from './components/CreateNew'
 import Anecdote from './components/Anecdote'
 
-import { Link, Route, Routes, useMatch } from 'react-router-dom'
+import { Route, Routes, useMatch } from 'react-router-dom'
 
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
@@ -47,10 +47,6 @@ const App = () => {
     setAnecdotes(anecdotes.map((a) => (a.id === id ? voted : a)))
   }
 
-  const padding = {
-    padding: 5,
-  }
-
   const match = useMatch('/anecdotes/:id')
   const anecdote = match
     ? anecdotes.find((anecdote) => anecdote.id === Number(match.params.id))
@@ -59,17 +55,8 @@ const App = () => {
   return (
     <div>
       <h1>Software anecdotes</h1>
-      <div>
-        <Link style={padding} to='/anecdotes'>
-          Anecdotes
-        </Link>
-        <Link style={padding} to='/create'>
-          Create new
-        </Link>
-        <Link style={padding} to='/about'>
-          About
-        </Link>
-      </div>
+      <Menu />
+      {notification}
       <Routes>
         <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route
@@ -81,7 +68,12 @@ const App = () => {
           element={<Anecdote handleLike={vote} anecdote={anecdote} />}
         />
         <Route path='/about' element={<About />} />
-        <Route path='/create' element={<CreateNew addNew={addNew} />} />
+        <Route
+          path='/create'
+          element={
+            <CreateNew addNew={addNew} setNotification={setNotification} />
+          }
+        />
       </Routes>
       <Footer />
     </div>
