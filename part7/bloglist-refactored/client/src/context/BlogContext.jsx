@@ -1,6 +1,6 @@
 import { useContext, createContext, useState, useEffect } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createBlog, getBlogs } from '../api/api'
+import { createBlog, deleteBlog, getBlogs, updateBlog } from '../api/api'
 
 const BlogContext = createContext()
 
@@ -35,8 +35,24 @@ export const BlogProvider = ({ children }) => {
     },
   })
 
+  const updateLikeMutation = useMutation({
+    mutationFn: updateBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['blogs'])
+    },
+  })
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: deleteBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['blogs'])
+    },
+  })
+
   return (
-    <BlogContext.Provider value={{ blogs, newBlogMutation }}>
+    <BlogContext.Provider
+      value={{ blogs, newBlogMutation, updateLikeMutation, deleteBlogMutation }}
+    >
       {children}
     </BlogContext.Provider>
   )
