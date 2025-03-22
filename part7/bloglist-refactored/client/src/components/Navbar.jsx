@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
+import { useUser } from '../context/UserContext'
 
 function Navbar() {
+  const { isAuthenticated, logout } = useUser()
+
   return (
     <div className='container flex justify-between items-center mb-10 mx-auto'>
       <h1 className='font-bold text-4xl my-3'>
@@ -14,9 +17,20 @@ function Navbar() {
           <li>
             <Link to={'/blogs'}>Blogs</Link>
           </li>
-          <li>
-            <Link to={'/login'}>login</Link>
-          </li>
+          {!isAuthenticated ? (
+            <li>
+              <Link to={'/login'}>login</Link>
+            </li>
+          ) : (
+            <li>
+              <button
+                className='underline cursor-pointer hover:text-red-500'
+                onClick={logout}
+              >
+                Logout
+              </button>
+            </li>
+          )}
         </ul>
       </nav>
     </div>

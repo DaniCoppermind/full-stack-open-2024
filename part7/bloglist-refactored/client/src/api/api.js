@@ -23,11 +23,21 @@ export const getUsers = async () => {
 // BLOGS METHODS
 
 export const getBlogs = async () => {
-  const res = await axios.get(`${BASE_URL}/blogs`)
+  if (!token) {
+    throw new Error('No token provided')
+  }
+  const config = {
+    headers: { Authorization: token },
+  }
+
+  const res = await axios.get(`${BASE_URL}/blogs`, config)
   return res.data
 }
 
 export const createBlog = async (newBlog) => {
+  if (!token) {
+    throw new Error('No token provided')
+  }
   const config = {
     headers: { Authorization: token },
   }
@@ -37,6 +47,9 @@ export const createBlog = async (newBlog) => {
 }
 
 export const updateBlog = async (updatedBlog) => {
+  if (!token) {
+    throw new Error('No token provided')
+  }
   const config = {
     headers: { Authorization: token },
   }
@@ -46,6 +59,9 @@ export const updateBlog = async (updatedBlog) => {
 }
 
 export const deleteBlog = async (id) => {
+  if (!token) {
+    throw new Error('No token provided')
+  }
   const config = {
     headers: { Authorization: token },
   }
