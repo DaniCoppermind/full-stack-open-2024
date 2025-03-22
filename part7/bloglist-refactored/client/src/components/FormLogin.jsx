@@ -1,8 +1,8 @@
-import { useBlog } from '../context/BlogContext'
+import { useAuth } from '../context/AuthContext'
 import { useState } from 'react'
 
 const FormLogin = () => {
-  const { login, isError, isLoading } = useBlog()
+  const { login, isError, isLoading } = useAuth()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 

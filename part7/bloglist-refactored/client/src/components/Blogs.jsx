@@ -1,8 +1,12 @@
-import { useBlog } from '../context/BlogContext'
 import BlogCard from './BlogCard'
+import { useAuth } from '../context/AuthContext.jsx'
+import { useBlog } from '../context/BlogContext.jsx'
+import CreateNewForm from './CreateNewForm.jsx'
 
 const Blogs = () => {
-  const { logout, username, blogs } = useBlog()
+  const { blogs } = useBlog()
+  const { logout, username } = useAuth()
+
   return (
     <>
       <p>{username} logged in</p>
@@ -13,9 +17,7 @@ const Blogs = () => {
         >
           Logout
         </button>
-        <button className='cursor-pointer rounded-md p-1 text-sm border hover:bg-amber-200'>
-          Create new
-        </button>
+        <CreateNewForm />
       </div>
       <section className='flex flex-col gap-1 flex-wrap'>
         {blogs.map((blog) => (
