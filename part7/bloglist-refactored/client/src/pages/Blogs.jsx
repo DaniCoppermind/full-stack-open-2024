@@ -1,11 +1,11 @@
-import BlogCard from './BlogCard'
-import { useAuth } from '../context/AuthContext.jsx'
-import { useBlog } from '../context/BlogContext.jsx'
-import CreateNewForm from './CreateNewForm.jsx'
+import { useUser } from '../context/UserContext'
+import { useBlog } from '../context/BlogContext'
+import BlogCard from '../components/BlogCard'
+import CreateNewForm from '../components/CreateNewForm'
 
 const Blogs = () => {
   const { blogs, notification } = useBlog()
-  const { logout, username } = useAuth()
+  const { logout, username } = useUser()
 
   return (
     <>
@@ -19,7 +19,7 @@ const Blogs = () => {
         </button>
         <CreateNewForm />
       </div>
-      <section className='flex flex-col gap-1 flex-wrap'>
+      <section className='flex items-start gap-1 flex-wrap'>
         {blogs.map((blog) => (
           <BlogCard key={blog.id} blog={blog} />
         ))}

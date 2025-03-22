@@ -1,8 +1,8 @@
-import { useAuth } from '../context/AuthContext'
+import { useUser } from '../context/UserContext'
 import { useState } from 'react'
 
 const FormLogin = () => {
-  const { login, isError, isLoading } = useAuth()
+  const { login, isError, isLoading } = useUser()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 

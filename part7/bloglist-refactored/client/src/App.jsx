@@ -1,15 +1,14 @@
-import Blogs from './components/Blogs'
-import FormLogin from './components/FormLogin'
-import { useAuth } from './context/AuthContext.jsx'
+import BlogRoutes from './components/BlogRoutes.jsx'
+import Navbar from './components/Navbar.jsx'
 
 function App() {
-  const { isAuthenticated } = useAuth()
-
   return (
-    <main className='container m-3'>
-      <h1 className='font-bold text-4xl my-3'>Blogs</h1>
-      {isAuthenticated ? <Blogs /> : <FormLogin />}
-    </main>
+    <>
+      <Navbar />
+      <main className='container mx-auto'>
+        <BlogRoutes />
+      </main>
+    </>
   )
 }
 

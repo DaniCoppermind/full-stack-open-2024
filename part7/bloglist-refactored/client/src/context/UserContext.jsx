@@ -1,13 +1,19 @@
-import { useContext, createContext, useEffect, useReducer } from 'react'
-import { useMutation } from '@tanstack/react-query'
-import { loginPost, setToken } from '../api/api'
+import {
+  useContext,
+  createContext,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { getUsers, loginPost, setToken } from '../api/api'
 import { authReducer } from '../reducers/authReducer'
 
-const AuthContext = createContext()
+const userContext = createContext()
 
-export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (!context) throw new Error('useAuth must be used within an AuthProvider')
+export const useUser = () => {
+  const context = useContext(userContext)
+  if (!context) throw new Error('useUser must be used within an UserProvider')
 
   return context
 }
@@ -18,8 +24,21 @@ const initialState = {
   token: null,
 }
 
-export const AuthProvider = ({ children }) => {
+export const UserProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState)
+  const [users, setUsers] = useState([])
+
+  const { data } = useQuery({
+    queryKey: ['users'],
+    queryFn: getUsers,
+    refetchOnWindowFocus: false,
+  })
+
+  useEffect(() => {
+    if (data) {
+      setUsers(data)
+    }
+  }, [data])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('token')
@@ -62,7 +81,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider
+    <userContext.Provider
       value={{
         isAuthenticated: state.isAuthenticated,
         username: state.username,
@@ -71,9 +90,10 @@ export const AuthProvider = ({ children }) => {
         isLoading: mutationLogin.isLoading,
         isError: mutationLogin.isError,
         isSuccess: mutationLogin.isSuccess,
+        users,
       }}
     >
       {children}
-    </AuthContext.Provider>
+    </userContext.Provider>
   )
 }

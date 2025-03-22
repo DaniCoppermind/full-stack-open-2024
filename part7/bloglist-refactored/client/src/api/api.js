@@ -8,10 +8,19 @@ export const setToken = (newToken) => {
   token = `Bearer ${newToken}`
 }
 
+// USERS METHODS
+
 export const loginPost = async (loginData) => {
   const res = await axios.post(`${BASE_URL}/login`, loginData)
   return res.data
 }
+
+export const getUsers = async () => {
+  const res = await axios.get(`${BASE_URL}/users`)
+  return res.data
+}
+
+// BLOGS METHODS
 
 export const getBlogs = async () => {
   const res = await axios.get(`${BASE_URL}/blogs`)
