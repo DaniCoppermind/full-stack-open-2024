@@ -32,12 +32,8 @@ export const updateBlog = async (updatedBlog) => {
     headers: { Authorization: token },
   }
 
-  const res = await axios.put(
-    `${BASE_URL}/blogs/${updatedBlog.id}`,
-    updatedBlog,
-    config
-  )
-  return res.data
+  await axios.put(`${BASE_URL}/blogs/${updatedBlog.id}`, updatedBlog, config)
+  return updatedBlog
 }
 
 export const deleteBlog = async (id) => {
@@ -45,6 +41,6 @@ export const deleteBlog = async (id) => {
     headers: { Authorization: token },
   }
 
-  const res = await axios.delete(`${BASE_URL}/blogs/${id}`, config)
-  return res.data
+  await axios.delete(`${BASE_URL}/blogs/${id}`, config)
+  return id
 }

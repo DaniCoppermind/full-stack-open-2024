@@ -4,7 +4,7 @@ import { useBlog } from '../context/BlogContext.jsx'
 import CreateNewForm from './CreateNewForm.jsx'
 
 const Blogs = () => {
-  const { blogs } = useBlog()
+  const { blogs, notification } = useBlog()
   const { logout, username } = useAuth()
 
   return (
@@ -24,6 +24,9 @@ const Blogs = () => {
           <BlogCard key={blog.id} blog={blog} />
         ))}
       </section>
+      {notification.message && (
+        <span className={notification.type}>{notification.message}</span>
+      )}
     </>
   )
 }

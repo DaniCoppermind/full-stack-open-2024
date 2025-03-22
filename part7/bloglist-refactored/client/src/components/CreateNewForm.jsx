@@ -25,6 +25,7 @@ function CreateNewForm() {
     e.preventDefault()
     newBlogMutation.mutate(formData)
     setFormData(values)
+    setFormCreate(false)
   }
 
   if (!formCreate) {

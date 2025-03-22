@@ -1,7 +1,7 @@
 import { useContext, createContext, useEffect, useReducer } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { loginPost, setToken } from '../api/api'
-import { authReducer } from '../hooks/authReducer'
+import { authReducer } from '../reducers/authReducer'
 
 const AuthContext = createContext()
 

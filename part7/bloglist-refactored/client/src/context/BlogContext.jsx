@@ -1,6 +1,13 @@
-import { useContext, createContext, useState, useEffect } from 'react'
+import {
+  useContext,
+  createContext,
+  useState,
+  useEffect,
+  useReducer,
+} from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createBlog, deleteBlog, getBlogs, updateBlog } from '../api/api'
+import { notificationReducer } from '../reducers/notificationReducer'
 
 const BlogContext = createContext()
 
@@ -11,9 +18,18 @@ export const useBlog = () => {
   return context
 }
 
+const initialNotificationState = {
+  type: '',
+  message: '',
+}
+
 export const BlogProvider = ({ children }) => {
   const queryClient = useQueryClient()
   const [blogs, setBlogs] = useState([])
+  const [notification, dispatchNotification] = useReducer(
+    notificationReducer,
+    initialNotificationState
+  )
 
   const { data } = useQuery({
     queryKey: ['blogs'],
@@ -27,31 +43,82 @@ export const BlogProvider = ({ children }) => {
     }
   }, [data])
 
+  useEffect(() => {
+    if (notification.message) {
+      const timer = setTimeout(() => {
+        dispatchNotification({ type: 'CLEAR_NOTIFICATION' })
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [notification])
+
   const newBlogMutation = useMutation({
     mutationFn: createBlog,
     onSuccess: (newBlog) => {
       const blogs = queryClient.getQueryData(['blogs'])
-      queryClient.setQueryData(['blogs'], [...blogs, newBlog])
+      if (blogs) {
+        queryClient.setQueryData(['blogs'], [...blogs, newBlog])
+      }
+      dispatchNotification({
+        type: 'SET_NOTIFICATION',
+        payload: {
+          type: 'created',
+          message: `Blog "${newBlog.title}" created successfully!`,
+        },
+      })
     },
   })
 
   const updateLikeMutation = useMutation({
     mutationFn: updateBlog,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['blogs'])
+    onSuccess: (updatedBlog) => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      if (blogs) {
+        const updatedBlogs = blogs.map((blog) =>
+          blog.id === updatedBlog.id ? updatedBlog : blog
+        )
+        queryClient.setQueriesData(['blogs'], updatedBlogs)
+        dispatchNotification({
+          type: 'SET_NOTIFICATION',
+          payload: {
+            type: 'like',
+            message: `You like "${updatedBlog.title}"!`,
+          },
+        })
+      }
     },
   })
 
   const deleteBlogMutation = useMutation({
     mutationFn: deleteBlog,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['blogs'])
+    onSuccess: (deletedBlogId) => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      if (blogs) {
+        const deletedBlog = blogs.find((blog) => blog.id === deletedBlogId)
+        queryClient.setQueryData(
+          ['blogs'],
+          blogs.filter((blog) => blog.id !== deletedBlogId)
+        )
+        dispatchNotification({
+          type: 'SET_NOTIFICATION',
+          payload: {
+            type: 'deleted',
+            message: `Blog "${deletedBlog.title}" deleted successfully!`,
+          },
+        })
+      }
     },
   })
 
   return (
     <BlogContext.Provider
-      value={{ blogs, newBlogMutation, updateLikeMutation, deleteBlogMutation }}
+      value={{
+        blogs,
+        newBlogMutation,
+        updateLikeMutation,
+        deleteBlogMutation,
+        notification,
+      }}
     >
       {children}
     </BlogContext.Provider>
