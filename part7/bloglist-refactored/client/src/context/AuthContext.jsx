@@ -1,6 +1,7 @@
-import { useContext, createContext, useState, useEffect } from 'react'
+import { useContext, createContext, useEffect, useReducer } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { loginPost, setToken } from '../api/api'
+import { authReducer } from '../hooks/authReducer'
 
 const AuthContext = createContext()
 
@@ -11,23 +12,26 @@ export const useAuth = () => {
   return context
 }
 
+const initialState = {
+  isAuthenticated: false,
+  username: '',
+  token: null,
+}
+
 export const AuthProvider = ({ children }) => {
-  // User Authorization
-  const [username, setUsername] = useState('')
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [state, dispatch] = useReducer(authReducer, initialState)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('token')
     if (loggedUserJSON) {
-      // Only for the name
       const formatedUsernameJSON = window.localStorage
         .getItem('username')
         .replaceAll('"', '')
 
       const newToken = JSON.parse(loggedUserJSON)
       setToken(newToken)
-      setIsAuthenticated(true)
-      setUsername(formatedUsernameJSON)
+      dispatch({ type: 'LOGIN', payload: { username: formatedUsernameJSON } })
+      dispatch({ type: 'SET_TOKEN', payload: { token: newToken } })
     }
   }, [])
 
@@ -36,13 +40,14 @@ export const AuthProvider = ({ children }) => {
     mutationFn: loginPost,
     onSuccess: (data) => {
       const { token, username } = data
-      setUsername(username)
-      setIsAuthenticated(true)
+      setToken(token)
+      dispatch({ type: 'LOGIN', payload: { username } })
+      dispatch({ type: 'SET_TOKEN', payload: { token } })
       window.localStorage.setItem('token', JSON.stringify(token))
       window.localStorage.setItem('username', JSON.stringify(username))
     },
     onError: () => {
-      setIsAuthenticated(false)
+      dispatch({ type: 'LOGOUT' })
     },
   })
 
@@ -53,18 +58,16 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     window.localStorage.removeItem('token')
     window.localStorage.removeItem('username')
-    setIsAuthenticated(false)
-    setUsername('')
+    dispatch({ type: 'LOGOUT' })
   }
 
   return (
     <AuthContext.Provider
       value={{
-        isAuthenticated,
-        setIsAuthenticated,
+        isAuthenticated: state.isAuthenticated,
+        username: state.username,
         login,
         logout,
-        username,
         isLoading: mutationLogin.isLoading,
         isError: mutationLogin.isError,
         isSuccess: mutationLogin.isSuccess,
