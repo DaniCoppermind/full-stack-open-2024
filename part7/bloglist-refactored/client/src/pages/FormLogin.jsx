@@ -16,6 +16,7 @@ const FormLogin = () => {
       <div className='flex flex-col gap-1'>
         <label className='font-semibold'>Username</label>
         <input
+          required
           className='border rounded-md placeholder-gray-600'
           placeholder='Your Username Here'
           type='text'
@@ -26,6 +27,7 @@ const FormLogin = () => {
       <div className='flex flex-col gap-1'>
         <label className='font-semibold'>Password</label>
         <input
+          required
           className='border rounded-md placeholder-gray-600'
           placeholder='******'
           type='password'

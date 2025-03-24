@@ -82,7 +82,7 @@ export const BlogProvider = ({ children }) => {
           type: 'SET_NOTIFICATION',
           payload: {
             type: 'like',
-            message: `You like "${updatedBlog.title}"!`,
+            message: `You liked "${updatedBlog.title}"!`,
           },
         })
       }

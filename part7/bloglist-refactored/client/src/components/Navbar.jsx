@@ -17,9 +17,6 @@ function Navbar() {
           <li>
             <Link to={'/blogs'}>Blogs</Link>
           </li>
-          <li>
-            <Link to={'/createBlog'}>Create Blog</Link>
-          </li>
           {!isAuthenticated ? (
             <li>
               <Link to={'/login'}>login</Link>
