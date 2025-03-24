@@ -69,3 +69,22 @@ export const deleteBlog = async (id) => {
   await axios.delete(`${BASE_URL}/blogs/${id}`, config)
   return id
 }
+
+// Comments post
+// http://localhost:3003/api/blogs/67dee188f6d4b83ecc88c7b3/comments
+export const createComment = async (commentObject) => {
+  if (!token) {
+    throw new Error('No token provided')
+  }
+  const config = {
+    headers: { Authorization: token },
+  }
+  const { blogId, comment } = commentObject
+
+  const res = await axios.post(
+    `${BASE_URL}/blogs/${blogId}/comments`,
+    { comment },
+    config
+  )
+  return res.data
+}

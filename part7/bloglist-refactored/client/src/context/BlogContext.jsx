@@ -6,7 +6,13 @@ import {
   useReducer,
 } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createBlog, deleteBlog, getBlogs, updateBlog } from '../api/api'
+import {
+  createBlog,
+  createComment,
+  deleteBlog,
+  getBlogs,
+  updateBlog,
+} from '../api/api'
 import { notificationReducer } from '../reducers/notificationReducer'
 
 const BlogContext = createContext()
@@ -110,6 +116,26 @@ export const BlogProvider = ({ children }) => {
     },
   })
 
+  const newCommentMutation = useMutation({
+    mutationFn: createComment,
+    onSuccess: (updatedBlog) => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      if (blogs) {
+        const updatedBlogs = blogs.map((blog) =>
+          blog.id === updatedBlog.id ? updatedBlog : blog
+        )
+        queryClient.setQueryData(['blogs'], updatedBlogs)
+        dispatchNotification({
+          type: 'SET_NOTIFICATION',
+          payload: {
+            type: 'created',
+            message: `Comment added to "${updatedBlog.title}"!`,
+          },
+        })
+      }
+    },
+  })
+
   return (
     <BlogContext.Provider
       value={{
@@ -117,6 +143,7 @@ export const BlogProvider = ({ children }) => {
         newBlogMutation,
         updateLikeMutation,
         deleteBlogMutation,
+        newCommentMutation,
         notification,
       }}
     >

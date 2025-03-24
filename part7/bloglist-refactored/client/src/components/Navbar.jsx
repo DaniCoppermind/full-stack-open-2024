@@ -17,11 +17,7 @@ function Navbar() {
           <li>
             <Link to={'/blogs'}>Blogs</Link>
           </li>
-          {!isAuthenticated ? (
-            <li>
-              <Link to={'/login'}>login</Link>
-            </li>
-          ) : (
+          {isAuthenticated ? (
             <li>
               <button
                 className='underline cursor-pointer hover:text-red-500'
@@ -29,6 +25,10 @@ function Navbar() {
               >
                 Logout
               </button>
+            </li>
+          ) : (
+            <li>
+              <Link to={'/login'}>login</Link>
             </li>
           )}
         </ul>
