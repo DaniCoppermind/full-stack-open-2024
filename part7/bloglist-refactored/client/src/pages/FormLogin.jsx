@@ -2,7 +2,7 @@ import { useUser } from '../context/UserContext'
 import { useState } from 'react'
 
 const FormLogin = () => {
-  const { login, isError, isLoading } = useUser()
+  const { login, isError, isLoading, isSuccess } = useUser()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -44,6 +44,9 @@ const FormLogin = () => {
         <p className='font-semibold text-red-500'>
           Invalid Credentials, try again.
         </p>
+      )}
+      {isSuccess && (
+        <p className='font-semibold text-green-500'>Login Successfully!</p>
       )}
     </form>
   )
