@@ -1,5 +1,7 @@
 import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
+import { GraphQLError } from 'graphql'
+import { v1 as uuid } from 'uuid'
 
 let authors = [
   {
@@ -99,6 +101,19 @@ const typeDefs = `
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
   }
+
+  type Mutation {
+    addBook(
+      title: String!
+      author: String!
+      published: Int!
+      genres: [String!]!
+    ): Book
+    editAuthor(
+      name: String!
+      born: Int!
+    ): Author
+  }
 `
 
 const resolvers = {
@@ -127,6 +142,31 @@ const resolvers = {
   Author: {
     bookCount: (root) => {
       return books.filter((book) => book.author === root.name).length
+    },
+  },
+  Mutation: {
+    addBook: (root, args) => {
+      let author = authors.find((author) => author.name === args.author)
+      if (!author) {
+        author = { name: args.author, id: uuid() }
+        authors = authors.concat(author)
+      }
+
+      const book = { ...args, id: uuid() }
+      books = books.concat(book)
+      return book
+    },
+    editAuthor: (root, args) => {
+      const author = authors.find((author) => author.name === args.name)
+      if (!author) {
+        return null
+      }
+
+      const updatedAuthor = { ...author, born: args.born }
+      authors = authors.map((author) =>
+        author.name === args.name ? updatedAuthor : author
+      )
+      return updatedAuthor
     },
   },
 }
