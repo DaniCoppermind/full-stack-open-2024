@@ -5,17 +5,17 @@ import { GraphQLError } from 'graphql'
 
 let persons = [
   {
-    name: 'Arto Hellas',
-    phone: '040-123543',
-    street: 'Tapiolankatu 5 A',
-    city: 'Espoo',
+    name: 'Daniel García',
+    phone: '33621237260',
+    street: '4 Rue Saint Guilles',
+    city: 'París',
     id: '3d594650-3436-11e9-bc57-8b80ba54c431',
   },
   {
-    name: 'Matti Luukkainen',
-    phone: '040-432342',
-    street: 'Malminkaari 10 A',
-    city: 'Helsinki',
+    name: 'Mariel la lok',
+    phone: '0414-7451077',
+    street: 'Las Tables',
+    city: 'Delta Mamaculo',
     id: '3d599470-3436-11e9-bc57-8b80ba54c431',
   },
   {

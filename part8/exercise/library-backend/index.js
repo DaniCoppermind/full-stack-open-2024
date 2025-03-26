@@ -86,6 +86,7 @@ const typeDefs = `
     name: String!
     born: Int
     bookCount: Int!
+    id: ID!
   }
 
   type Book {
@@ -93,6 +94,7 @@ const typeDefs = `
     published: Int!
     author: String!
     genres: [String!]!
+    id: ID!
   }
 
   type Query {
@@ -146,6 +148,16 @@ const resolvers = {
   },
   Mutation: {
     addBook: (root, args) => {
+      let isBook = books.find((book) => book.title === args.title)
+      if (isBook) {
+        throw new GraphQLError('This Book already exists', {
+          extensions: {
+            code: 'BAD_TITLE_INPUT',
+            invalidArgs: args.title,
+          },
+        })
+      }
+
       let author = authors.find((author) => author.name === args.author)
       if (!author) {
         author = { name: args.author, id: uuid() }
@@ -159,7 +171,12 @@ const resolvers = {
     editAuthor: (root, args) => {
       const author = authors.find((author) => author.name === args.name)
       if (!author) {
-        return null
+        throw new GraphQLError("Author doesn't exists", {
+          extensions: {
+            code: 'BAD_NAME_INPUT',
+            invalidArgs: args.name,
+          },
+        })
       }
 
       const updatedAuthor = { ...author, born: args.born }
