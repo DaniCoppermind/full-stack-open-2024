@@ -181,7 +181,6 @@ const resolvers = {
   Mutation: {
     addBook: async (root, args, context) => {
       try {
-        const author = await Author.findOne({ name: args.author })
         const currentUser = context.currentUser
 
         if (!currentUser) {
@@ -192,14 +191,11 @@ const resolvers = {
           })
         }
 
+        let author = await Author.findOne({ name: args.author })
+
         if (!author) {
-          throw new GraphQLError('Author not found', {
-            extensions: {
-              code: 'BAD_AUTHOR_INPUT',
-              invalidArgs: args.author,
-              error,
-            },
-          })
+          author = new Author({ name: args.author })
+          await author.save()
         }
 
         const book = new Book({
@@ -208,7 +204,9 @@ const resolvers = {
         })
 
         await book.save()
-        return book
+
+        const populatedBook = await book.populate('author')
+        return populatedBook
       } catch (error) {
         throw new GraphQLError('Saving Book failed', {
           extensions: {
@@ -268,7 +266,6 @@ const resolvers = {
         throw new GraphQLError('wrong credentials', {
           extensions: {
             code: 'BAD_USER_INPUT',
-            error,
           },
         })
       }
