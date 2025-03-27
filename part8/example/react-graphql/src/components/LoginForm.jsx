@@ -14,15 +14,15 @@ function LoginForm({ setToken, setError }) {
 
   useEffect(() => {
     if (result.data) {
-      console.log(result.data)
       const token = result.data.login.value
       setToken(token)
       localStorage.setItem('phonenumbers-user-token', token)
     }
   }, [result.data]) // eslint-disable-line
 
-  const submit = (e) => {
-    e.preventDefault()
+  const submit = async (event) => {
+    event.preventDefault()
+
     login({ variables: { username, password } })
   }
 
@@ -32,26 +32,19 @@ function LoginForm({ setToken, setError }) {
         <div>
           username{' '}
           <input
-            type='text'
-            required
             value={username}
-            onChange={(e) => {
-              setUsername(e.target.value)
-            }}
+            onChange={({ target }) => setUsername(target.value)}
           />
         </div>
         <div>
           password{' '}
           <input
             type='password'
-            required
             value={password}
-            onChange={(e) => {
-              setPassword(e.target.value)
-            }}
+            onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button type='submit'>Login</button>
+        <button type='submit'>login</button>
       </form>
     </div>
   )

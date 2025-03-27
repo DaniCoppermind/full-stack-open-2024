@@ -37,7 +37,7 @@ const Authors = ({ show, setError }) => {
           ))}
         </tbody>
       </table>
-      <BirthdayForm authors={authors} setError={setError} />
+      {/* <BirthdayForm authors={authors} setError={setError} /> */}
     </div>
   )
 }
