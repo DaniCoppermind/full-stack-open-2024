@@ -6,8 +6,10 @@ import Persons from './components/Persons'
 import FormPerson from './components/FormPerson'
 import { Notify } from './components/Notify'
 import FormPhone from './components/FormPhone'
+import LoginForm from './components/LoginForm'
 
 const App = () => {
+  const [token, setToken] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
 
   const result = useQuery(ALL_PERSONS)
@@ -21,6 +23,16 @@ const App = () => {
     setTimeout(() => {
       setErrorMessage(null)
     }, 10000)
+  }
+
+  if (!token) {
+    return (
+      <div>
+        <Notify errorMessage={errorMessage} />
+        <h2>Login</h2>
+        <LoginForm setToken={setToken} setError={notify} />
+      </div>
+    )
   }
 
   return (
