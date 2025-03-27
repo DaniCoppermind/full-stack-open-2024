@@ -1,60 +1,67 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { ALL_AUTHORS, UPDATE_BIRTHDAY } from '../queries'
 
-const BirthdayForm = ({ setError, authors }) => {
-  const [name, setName] = useState(authors[0].name)
+const BirthdayForm = ({ allAuthors, setError }) => {
+  const [selectedOption, setSelectedOption] = useState(null)
   const [born, setBorn] = useState('')
 
-  const [changeBirthday, result] = useMutation(UPDATE_BIRTHDAY, {
+  const [changeBirthday] = useMutation(UPDATE_BIRTHDAY, {
     refetchQueries: [{ query: ALL_AUTHORS }],
+    onError: (error) => {
+      const errorMessage =
+        error.graphQLErrors[0]?.message || 'An error occurred'
+      setError(errorMessage)
+    },
   })
 
-  const submit = (event) => {
-    event.preventDefault()
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    if (!selectedOption) {
+      setError('Please select an author')
+      return
+    }
 
     changeBirthday({
-      variables: { name, born: Number(born) },
+      variables: { name: selectedOption, born: parseInt(born) },
     })
 
-    setName('')
+    setSelectedOption(null)
     setBorn('')
   }
 
-  useEffect(() => {
-    if (result.data && result.data.editAuthor === null) {
-      setError('person not found')
-    }
-  }, [result.data]) // eslint-disable-line
-
   return (
     <div>
-      <h2>change number</h2>
-
-      <form onSubmit={submit}>
+      <h3>Change Birthday</h3>
+      <form onSubmit={handleSubmit}>
         <div>
+          <label htmlFor='author-select'>Author:</label>
           <select
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value)
-            }}
+            id='author-select'
+            value={selectedOption || ''}
+            onChange={(e) => setSelectedOption(e.target.value)}
           >
-            {authors &&
-              authors.map((author) => (
-                <option value={author.name} key={author.id}>
-                  {author.name}
-                </option>
-              ))}
+            <option value='' disabled>
+              Select an author
+            </option>
+            {allAuthors.map((author) => (
+              <option key={author.name} value={author.name}>
+                {author.name}
+              </option>
+            ))}
           </select>
         </div>
         <div>
-          born{' '}
+          <label htmlFor='born-input'>Born:</label>
           <input
+            id='born-input'
+            type='number'
             value={born}
-            onChange={({ target }) => setBorn(target.value)}
+            onChange={(e) => setBorn(e.target.value)}
           />
         </div>
-        <button type='submit'>change birthday</button>
+        <button type='submit'>Update Birthday</button>
       </form>
     </div>
   )
