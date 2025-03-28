@@ -1,21 +1,20 @@
 import { useQuery } from '@apollo/client'
 import { ALL_AUTHORS } from '../queries'
-import { useState } from 'react'
-import { useEffect } from 'react'
 import BirthdayForm from './BirthdayForm'
 
 const Authors = ({ show, setError }) => {
-  const [authors, setAuthors] = useState([])
-  const queryAuthors = useQuery(ALL_AUTHORS)
-
-  useEffect(() => {
-    if (queryAuthors.data) {
-      setAuthors(queryAuthors.data.allAuthors)
-    }
-  }, [queryAuthors])
+  const { loading, data } = useQuery(ALL_AUTHORS)
 
   if (!show) {
     return null
+  }
+
+  if (loading) {
+    return <div>loading...</div>
+  }
+
+  if (!data) {
+    return <div>Failed to load authors</div>
   }
 
   return (
@@ -28,7 +27,7 @@ const Authors = ({ show, setError }) => {
             <th>born</th>
             <th>books</th>
           </tr>
-          {authors.map((a) => (
+          {data.allAuthors.map((a) => (
             <tr key={a.id}>
               <td>{a.name}</td>
               <td>{a.born}</td>
@@ -37,7 +36,7 @@ const Authors = ({ show, setError }) => {
           ))}
         </tbody>
       </table>
-      <BirthdayForm allAuthors={authors} setError={setError} />
+      <BirthdayForm allAuthors={data.allAuthors} setError={setError} />
     </div>
   )
 }

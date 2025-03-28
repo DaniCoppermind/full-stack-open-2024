@@ -1,52 +1,41 @@
 import { useQuery } from '@apollo/client'
-import React, { useEffect, useState } from 'react'
 import { ALL_BOOKS, ME } from '../queries'
 import BookCard from './BookCard'
 
-const Recommendations = ({ show }) => {
-  const [user, setUser] = useState([])
-  const [books, setBooks] = useState([])
-  const queryUser = useQuery(ME)
-  const queryBooks = useQuery(ALL_BOOKS)
-
-  useEffect(() => {
-    if (queryUser.data) {
-      setUser(queryUser.data.me)
-    }
-  }, [queryUser])
-
-  useEffect(() => {
-    if (queryBooks.data) {
-      setBooks(queryBooks.data.allBooks)
-    }
-  }, [queryBooks])
+const Recommendations = ({ show, favoriteGenre }) => {
+  const { loading, data } = useQuery(ALL_BOOKS, {
+    skip: !favoriteGenre,
+    variables: { genre: favoriteGenre },
+  })
 
   if (!show) {
     return null
   }
 
-  if (user.favoriteGenre === '') {
-    return <div>{user.username} do not have favorite genre.</div>
+  if (loading) {
+    return <div>Loading...</div>
   }
 
-  const recommendedBooks = books.filter((book) =>
-    book.genres.includes(user.favoriteGenre)
-  )
+  if (!data) {
+    return <div>Failed yo load recommendations.</div>
+  }
+
+  if (favoriteGenre === '') {
+    return <div>You don't have any favorite genre.</div>
+  }
 
   return (
     <>
       <h2>Recommendations</h2>
-      {recommendedBooks.length > 0 ? (
+      {data.allBooks.length === 0 && (
         <p>
-          books in your favorite genre <strong>{user.favoriteGenre}</strong>
-        </p>
-      ) : (
-        <p>
-          Not find recommended books for <strong>{user.favoriteGenre}</strong>{' '}
-          genre
+          No books in your favorite genre <strong>{favoriteGenre}</strong>
         </p>
       )}
-      <BookCard books={recommendedBooks} />
+      <p>
+        books in your favorite genre <strong>{favoriteGenre}</strong>
+      </p>
+      <BookCard books={data.allBooks} />
     </>
   )
 }

@@ -5,14 +5,18 @@ import Books from './components/Books'
 import NewBook from './components/NewBook'
 import { Notify } from './components/Notify'
 import Login from './components/Login'
-import { useApolloClient } from '@apollo/client'
+import { useApolloClient, useQuery } from '@apollo/client'
 import Recommendations from './components/Recommendations'
+import { ME } from './queries'
 
 function App() {
   const [token, setToken] = useState(null)
   const [page, setPage] = useState('authors')
   const [errorMessage, setErrorMessage] = useState(null)
   const client = useApolloClient()
+
+  const userQuery = useQuery(ME)
+  const favoriteGenre = userQuery?.data?.me?.favoriteGenre
 
   useEffect(() => {
     const storedToken = localStorage.getItem('user-token')
@@ -23,7 +27,7 @@ function App() {
     }
   }, [])
 
-  const logout = () => {
+  const handleLogout = () => {
     setToken(null)
     localStorage.clear()
     client.resetStore()
@@ -49,14 +53,17 @@ function App() {
         ) : (
           <>
             <button onClick={() => setPage('add')}>add book</button>
-            <button onClick={logout}>Logout</button>
+            <button onClick={handleLogout}>Logout</button>
           </>
         )}
       </div>
       <Notify errorMessage={errorMessage} />
       <Authors setError={notify} show={page === 'authors'} />
       <Books show={page === 'books'} />
-      <Recommendations show={page === 'recommendations'} />
+      <Recommendations
+        favoriteGenre={favoriteGenre}
+        show={page === 'recommendations'}
+      />
       <NewBook setError={notify} show={page === 'add'} />
       <Login setToken={setToken} setError={notify} show={page === 'login'} />
     </>
