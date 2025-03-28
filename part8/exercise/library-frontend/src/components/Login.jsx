@@ -32,6 +32,7 @@ const Login = ({ show, setToken, setError }) => {
 
   return (
     <div>
+      <p>username: Daniel, password: secret</p>
       <form onSubmit={submit}>
         <div>
           username{' '}

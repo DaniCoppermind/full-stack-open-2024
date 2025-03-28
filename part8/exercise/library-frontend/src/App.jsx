@@ -45,13 +45,13 @@ function App() {
       <div>
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
-        <button onClick={() => setPage('recommendations')}>
-          recommendations
-        </button>
         {!token ? (
           <button onClick={() => setPage('login')}>Login</button>
         ) : (
           <>
+            <button onClick={() => setPage('recommendations')}>
+              recommendations
+            </button>
             <button onClick={() => setPage('add')}>add book</button>
             <button onClick={handleLogout}>Logout</button>
           </>

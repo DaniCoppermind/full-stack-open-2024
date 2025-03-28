@@ -36,7 +36,9 @@ const Authors = ({ show, setError }) => {
           ))}
         </tbody>
       </table>
-      <BirthdayForm allAuthors={data.allAuthors} setError={setError} />
+      {localStorage.getItem('user-token') && (
+        <BirthdayForm allAuthors={data.allAuthors} setError={setError} />
+      )}
     </div>
   )
 }

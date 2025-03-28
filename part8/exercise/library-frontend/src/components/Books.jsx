@@ -23,7 +23,6 @@ const Books = ({ show }) => {
   }
 
   const handleBooksByGenre = (genre) => {
-    console.log(genre)
     setSelectedGenre(genre)
   }
 
