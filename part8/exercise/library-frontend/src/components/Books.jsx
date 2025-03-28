@@ -1,53 +1,47 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useQuery } from '@apollo/client'
-import { ALL_BOOKS } from '../queries'
+import { ALL_BOOKS, ALL_GENRES } from '../queries'
 import BookCard from './BookCard'
 
 const Books = ({ show }) => {
-  const [books, setBooks] = useState([])
-  const [genre, setGenre] = useState('')
-  const [filteredBooks, setFilteredBooks] = useState([])
-  const queryBooks = useQuery(ALL_BOOKS)
-
-  useEffect(() => {
-    if (queryBooks.data) {
-      setBooks(queryBooks.data.allBooks)
-      setFilteredBooks(queryBooks.data.allBooks)
-    }
-  }, [queryBooks])
+  const [selectedGenre, setSelectedGenre] = useState('')
+  const queryGenres = useQuery(ALL_GENRES)
+  const queryBooks = useQuery(ALL_BOOKS, {
+    variables: { genre: selectedGenre },
+  })
 
   if (!show) {
     return null
   }
 
-  // Utilizamos flatMap para obtener una lista única de géneros
-  const uniqueGenres = [...new Set(books.flatMap((book) => book.genres))]
+  if (queryBooks.loading || queryGenres.loading) {
+    return <div>loading...</div>
+  }
 
-  const filteredBooksByGenre = (selectedGenre) => {
-    setGenre(selectedGenre)
-    if (selectedGenre === 'ALL') {
-      setFilteredBooks(books)
-    } else {
-      setFilteredBooks(
-        books.filter((book) => book.genres.includes(selectedGenre))
-      )
-    }
+  if (!queryBooks.data) {
+    return <div>Books not found.</div>
+  }
+
+  const handleBooksByGenre = (genre) => {
+    console.log(genre)
+    setSelectedGenre(genre)
   }
 
   return (
     <div>
       <h2>books</h2>
       <p>
-        in genre <strong>{genre || 'All'}</strong>
+        In genre <strong>{selectedGenre ? selectedGenre : 'All'}</strong>
       </p>
-      <BookCard books={filteredBooks} />
+      <BookCard books={queryBooks.data.allBooks} />
       <div style={{ display: 'flex', gap: '5px', marginTop: '16px' }}>
-        {uniqueGenres.map((genre) => (
-          <button key={genre} onClick={() => filteredBooksByGenre(genre)}>
-            {genre}
-          </button>
-        ))}
-        <button onClick={() => filteredBooksByGenre('ALL')}>All</button>
+        <button onClick={() => handleBooksByGenre('')}>All</button>
+        {queryGenres.data.allGenres.length > 0 &&
+          queryGenres.data.allGenres.map((genre) => (
+            <button key={genre} onClick={() => handleBooksByGenre(genre)}>
+              {genre}
+            </button>
+          ))}
       </div>
     </div>
   )
