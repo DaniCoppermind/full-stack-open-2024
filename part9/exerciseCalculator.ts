@@ -26,7 +26,7 @@ const parseArguments = (args: string[]): exerciseCalculator => {
   return { dailyRoutine, goal }
 }
 
-const calculateExercises = (dailyRoutine: number[], goal: number): Result => {
+export const calculateExercises = (dailyRoutine: number[], goal: number): Result => {
   let trainingDays = 0;
   let totalHours= 0;
 
