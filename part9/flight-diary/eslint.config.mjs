@@ -13,6 +13,13 @@ export default [
       parserOptions: {
         project: './tsconfig.json', // Ruta al archivo tsconfig.json
       },
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+        console: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+      },
     },
     plugins: {
       '@typescript-eslint': tseslint,
@@ -21,7 +28,7 @@ export default [
       ...eslint.configs.recommended.rules,
       ...tseslint.configs.recommended.rules,
       ...tseslint.configs['recommended-requiring-type-checking'].rules,
-      '@typescript-eslint/semi': ['error'],
+      semi: ['error'],
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
@@ -32,11 +39,6 @@ export default [
         { argsIgnorePattern: '^_' },
       ],
       'no-case-declarations': 'off',
-    },
-    environment: {
-      browser: true,
-      es6: true,
-      node: true,
     },
   },
 ];
