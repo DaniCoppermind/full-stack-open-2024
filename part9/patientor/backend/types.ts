@@ -13,4 +13,6 @@ export type PatientsEntry = {
   occupation: string;
 }
 
+export type PatientsForFrontend = Omit<PatientsEntry, 'ssn'>
+
 // type Genre = 'male' | 'female' | 'other'
