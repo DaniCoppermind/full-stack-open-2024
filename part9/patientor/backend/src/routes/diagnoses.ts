@@ -1,10 +1,10 @@
 import express from "express";
-import diagnosesServices from "../services/diagnosesServices";
+import { getDiagnosesEntries } from "../services/diagnosesServices";
 
 const router = express.Router()
 
 router.get('/', (_req, res) => {
-  res.send(diagnosesServices.getEntries())
+  res.send(getDiagnosesEntries())
 })
 
 export default router
