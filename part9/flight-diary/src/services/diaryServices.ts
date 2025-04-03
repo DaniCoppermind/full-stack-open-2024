@@ -29,9 +29,9 @@ const addDiary = (entry: NewDiaryEntry): DiaryEntry => {
     ...entry
   };
 
-  diaries.push(newDiaryEntry)
-  return newDiaryEntry
-}
+  diaries.push(newDiaryEntry);
+  return newDiaryEntry;
+};
 
 export default {
   getEntries,
