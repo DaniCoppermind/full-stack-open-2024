@@ -10,11 +10,7 @@ import PatientListPage from './components/PatientListPage';
 const App = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
 
-  console.log(patients);
-
   useEffect(() => {
-    // void axios.get<void>(`${apiBaseUrl}/ping`);
-
     const fetchPatientList = async () => {
       const patients = await patientService.getAll();
       setPatients(patients);
