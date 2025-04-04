@@ -1,0 +1,26 @@
+.grid-diary {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+
+  .diary {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid white;
+    border-radius: 18px;
+    padding: 14px;
+
+    time {
+      color: beige;
+      font-weight: bold;
+    }
+  }
+}
+
+@media (min-width: 641px) {
+  .grid-diary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
