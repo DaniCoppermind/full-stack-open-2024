@@ -1,3 +1,4 @@
 playwright-blog-test
 node_modules
 .env
+build
