@@ -70,3 +70,5 @@ export const toNewPatientEntry = (object: unknown): NewPatientEntry => {
   throw new Error("Incorrect data: a filed missing");
   
 };
+
+// Diagnosis Entry
