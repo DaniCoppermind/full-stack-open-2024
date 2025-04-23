@@ -6,7 +6,7 @@ import { Patient } from './types';
 
 import patientService from './services/patients';
 import PatientListPage from './components/PatientListPage';
-import { PatientPage } from './components/PatientPage';
+import PatientPage from './components/PatientPage';
 
 const App = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -44,7 +44,7 @@ const App = () => {
                 />
               }
             />
-            <Route path='/patients/:id' element={<PatientPage patients={patients} />} />
+            <Route path='/patients/:id' element={<PatientPage />} />
           </Routes>
         </Container>
       </Router>
