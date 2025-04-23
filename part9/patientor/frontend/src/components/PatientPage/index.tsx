@@ -2,11 +2,12 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import patientService from '../../services/patients';
-import { Diagnosis, Entry, PatientWithEntries } from "../../types";
+import { Diagnosis, PatientWithEntries } from "../../types";
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 import { formatDate } from "../../utils/formatDate";
 import { getDiagnoses } from "../../services/diagnosis";
+import EntryDetails from "./EntryDetails";
 
 
 const PatientPage = () => {
@@ -37,63 +38,6 @@ const PatientPage = () => {
     );
   }
 
-  const renderEntry = (entry: Entry) => {
-    const getDiagnosisName = (code: string): string | undefined => {
-      const diagnosis = diagnoses.find((d) => d.code === code);
-      return diagnosis ? diagnosis.name : undefined;
-    };
-  
-    switch (entry.type) {
-      case "HealthCheck":
-        return (
-          <div key={entry.id}>
-            <p>
-              {entry.date} {entry.description}
-            </p>
-            <ul>
-              {entry.diagnosisCodes?.map((code) => (
-                <li key={code}>
-                  {code} {getDiagnosisName(code)}
-                </li>
-              ))}
-            </ul>
-          </div>
-        );
-      case "Hospital":
-        return (
-          <div key={entry.id}>
-            <p>
-              {entry.date} {entry.description}
-            </p>
-            <ul>
-              {entry.diagnosisCodes?.map((code) => (
-                <li key={code}>
-                  {code} {getDiagnosisName(code)}
-                </li>
-              ))}
-            </ul>
-          </div>
-        );
-      case "OccupationalHealthcare":
-        return (
-          <div key={entry.id}>
-            <p>
-              {entry.date} {entry.description}
-            </p>
-            <ul>
-              {entry.diagnosisCodes?.map((code) => (
-                <li key={code}>
-                  {code} {getDiagnosisName(code)}
-                </li>
-              ))}
-            </ul>
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
-
   return (
    <section>
      <div>
@@ -105,7 +49,9 @@ const PatientPage = () => {
       <div>
         <h3>Entries</h3>
         {patient.entries.length > 0 ? (
-          patient.entries.map((entry) => renderEntry(entry))
+          patient.entries.map((entry) => (
+            <EntryDetails key={entry.id} entry={entry} diagnoses={diagnoses} />
+          ))
         ) : (
           <p>No entries available</p>
         )}
