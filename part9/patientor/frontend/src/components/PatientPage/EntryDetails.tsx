@@ -40,9 +40,6 @@ const EntryDetails: React.FC<EntryDetailsProps> = ({ entry, diagnoses }) => {
               </li>
             ))}
           </ul>
-          <p>
-            <strong>Discharge:</strong> {entry.discharge.date} - {entry.discharge.criteria}
-          </p>
         </div>
       );
     case "OccupationalHealthcare":
@@ -58,9 +55,6 @@ const EntryDetails: React.FC<EntryDetailsProps> = ({ entry, diagnoses }) => {
               </li>
             ))}
           </ul>
-          <p>
-            <strong>Employer:</strong> {entry.employerName}
-          </p>
         </div>
       );
     default:
