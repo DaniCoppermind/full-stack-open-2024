@@ -41,7 +41,7 @@ const PatientPage = () => {
   return (
    <section>
      <div>
-      <h2>{patient.name} {patient.gender === 'male' ? <MaleIcon /> : <FemaleIcon />}</h2>
+      <h2>{patient.name} {patient.gender === "male" ? <MaleIcon /> : patient.gender === "female" ? <FemaleIcon /> : null}</h2>
       <p>Date of birth: {patient.dateOfBirth ? formatDate(patient.dateOfBirth) : ''}</p>
       <p>ssn: {patient.ssn}</p>
       <p>occupation: {patient.occupation}</p>
